@@ -1,6 +1,8 @@
 package com.winner_cat.global.config;
 
 import com.winner_cat.global.jwt.filter.JWTFilter;
+import com.winner_cat.global.jwt.handler.CustomAccessDeniedHandler;
+import com.winner_cat.global.jwt.handler.CustomAuthenticationEntryPoint;
 import com.winner_cat.global.jwt.service.CustomUserDetailsService;
 import com.winner_cat.global.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -42,18 +46,17 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         // 시큐리티 예외처리 필터
-//        http
-//                .exceptionHandling(exceptionHandling -> exceptionHandling
-//                        .authenticationEntryPoint()
-//                        .accessDeniedHandler());
+        http
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler));
 
         // 경로별 인가 설정
         http
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
                         .requestMatchers("/login", "/join").permitAll()
-                        // admin 경로 요청에 대해서는 ADMIN 권한을 가진 경우에만 허용
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/test").hasRole("ADMIN")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
                 );

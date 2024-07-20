@@ -25,7 +25,8 @@ public enum ErrorStatus implements BaseCode {
 	ACCOUNT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH4004", "자격증명이 만료되었습니다."),
 
 	// JWT Error
-	TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "TOKEN4001", "토큰이 없거나 만료되었습니다.");
+	TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "TOKEN4001", "토큰이 없거나 만료되었습니다."),
+	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
