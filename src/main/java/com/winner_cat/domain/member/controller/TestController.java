@@ -1,18 +1,18 @@
 package com.winner_cat.domain.member.controller;
 
+import com.winner_cat.global.jwt.dto.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
 
-    @GetMapping("/admin")
-    public String adminP() {
-        return "This is Admin Controller";
-    }
-
-    @GetMapping("/")
-    public String mainP() {
-        return "This is Main Controller";
+    /**
+     * JWT Test
+     */
+    @GetMapping("/test")
+    public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return "Welcome " + userDetails.getEmail();
     }
 }

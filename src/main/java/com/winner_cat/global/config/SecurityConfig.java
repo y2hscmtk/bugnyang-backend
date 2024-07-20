@@ -51,7 +51,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/login", "/join").permitAll()
                         // admin 경로 요청에 대해서는 ADMIN 권한을 가진 경우에만 허용
                         .requestMatchers("/admin").hasRole("ADMIN")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
