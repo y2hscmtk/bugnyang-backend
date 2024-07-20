@@ -7,8 +7,10 @@ import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
 import com.winner_cat.global.jwt.util.JwtUtil;
+import com.winner_cat.global.response.ApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +25,7 @@ public class MemberService {
 
     // 로그인
     @Transactional
-    public String login(LoginRequestDTO dto) {
+    public ResponseEntity<?> login(LoginRequestDTO dto) {
         String email = dto.getEmail();
         String password = dto.getPassword();
         Member member = memberRepository.findMemberByEmail(email)
@@ -34,21 +36,26 @@ public class MemberService {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_CORRECT);
         }
 
-        String accessToken = jwtUtil.createJwt(member.getUsername(), member.getRole());
-        return accessToken;
+        String accessToken = jwtUtil.createJwt(member.getEmail(), member.getRole());
+
+        // JWT 발급 성공시 Header에 삽입하여 반환
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        return ResponseEntity.ok().headers(headers).body(ApiResponse.onSuccess("Bearer " + accessToken));
     }
 
     public ResponseEntity<?> join(JoinDTO joinDTO) {
 
         // 동일 username 사용자 생성 방지
-        if (memberRepository.existsMemberByUsername(joinDTO.getUsername())) {
+        if (memberRepository.existsMemberByEmail(joinDTO.getEmail())) {
             System.out.println("이미 존재하는 회원");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 존재하는 회원입니다.");
         }
 
         // 새로운 회원 생성 - OAuth2 를 통한 회원가입을 수행할 경우 비밀번호는 저장하지 않아야함
         Member member = Member.builder()
-                .username(joinDTO.getUsername())
+                .email(joinDTO.getEmail())
                 // 비밀번호 암호화 해서 저장
                 .password(passwordEncoder.encode(joinDTO.getPassword()))
                 .role("ROLE_ADMIN") // 사용자 권한 설정 접두사 ROLE 작성 필요

@@ -23,7 +23,7 @@ public class JwtUtil {
 
     // Secret Key
     public JwtUtil(@Value("${spring.jwt.secret}") String secret,
-                   @Value("${spring.jwt.expiration_time") long tokenExpTime) {
+                   @Value("${spring.jwt.expiration_time}") long tokenExpTime) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
         this.tokenExpTime = tokenExpTime;
     }
@@ -37,8 +37,8 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public String getUsername(String token) {
-        return getAllClaims(token).get("username", String.class);
+    public String getEmail(String token) {
+        return getAllClaims(token).get("email", String.class);
     }
 
     public String getRole(String token) {
@@ -53,9 +53,9 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String username, String role) {
+    public String createJwt(String email, String role) {
         return Jwts.builder()
-                .claim("username", username)
+                .claim("email", email) // -> email 역할로?
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokenExpTime))

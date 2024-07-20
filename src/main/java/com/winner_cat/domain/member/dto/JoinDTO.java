@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class JoinDTO {
-    private String username;
+    private String email; // google-test@gmail.com
     private String password;
 }

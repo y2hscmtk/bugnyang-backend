@@ -21,8 +21,7 @@ public class MemberController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO dto) {
-        String token = memberService.login(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+        return memberService.login(dto);
     }
 
     /**
@@ -30,7 +29,6 @@ public class MemberController {
      */
     @PostMapping("/join")
     public ResponseEntity<?> joinProcess(@RequestBody JoinDTO joinDTO) {
-        // 회원 가입 진행
         return memberService.join(joinDTO);
     }
 }

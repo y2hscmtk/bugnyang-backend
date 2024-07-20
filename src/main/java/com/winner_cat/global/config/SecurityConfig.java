@@ -1,5 +1,9 @@
 package com.winner_cat.global.config;
 
+import com.winner_cat.global.jwt.filter.JWTFilter;
+import com.winner_cat.global.jwt.service.CustomUserDetailsService;
+import com.winner_cat.global.jwt.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,10 +11,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -26,6 +35,18 @@ public class SecurityConfig {
         http
                 .formLogin(auth -> auth.disable())
                 .httpBasic(auth -> auth.disable());
+
+        // JWT 검증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+        http
+                .addFilterBefore(new JWTFilter(customUserDetailsService, jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class);
+
+        // 시큐리티 예외처리 필터
+//        http
+//                .exceptionHandling(exceptionHandling -> exceptionHandling
+//                        .authenticationEntryPoint()
+//                        .accessDeniedHandler());
+
         // 경로별 인가 설정
         http
                 .authorizeHttpRequests(auth -> auth

@@ -12,9 +12,8 @@ import lombok.*;
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username; // JWT 검증 등에서 사용될 사용자 이름
+    private String email; // JWT 검증 등에서 사용될 사용자 이름
     private String password;
     private String nickname; // 서비스에서 사용할 사용자의 이름
-    private String email; // 사용자 이메일
     private String role; // 사용자 권한
 }
