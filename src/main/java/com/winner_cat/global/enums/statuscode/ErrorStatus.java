@@ -13,6 +13,7 @@ public enum ErrorStatus implements BaseCode {
 
 	// Member Error
 	MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "해당하는 사용자를 찾을 수 없습니다."),
+	PASSWORD_NOT_CORRECT(HttpStatus.FORBIDDEN, "MEMBER4002", "비밀번호가 일치하지 않습니다."),
 
 	// Resource Error
 	RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "RESOURCE4001", "잘못된 api 요청입니다. 반복적인 오류 발생시 관리자에게 문의해주세요."),
