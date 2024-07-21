@@ -10,15 +10,17 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ArticleTag")
-public class ArticleTag extends BaseEntity {
+public class ArticleTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_tag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Tag tagId;
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Article articleId;
+    @JoinColumn(name = "article_id")
+    private Article article;
 }

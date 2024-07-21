@@ -24,6 +24,9 @@ public enum ErrorStatus implements BaseCode {
 	ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, "AUTH4003", "계정이 비활성화되었습니다."),
 	ACCOUNT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH4004", "자격증명이 만료되었습니다."),
 
+	// Tag
+	TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "해당하는 태그가 없습니다"),
+
 	// JWT Error
 	TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "TOKEN4001", "토큰이 없거나 만료되었습니다."),
 	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다.");

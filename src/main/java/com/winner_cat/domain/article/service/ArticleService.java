@@ -5,5 +5,5 @@ import com.winner_cat.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface ArticleService {
-    public ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req);
+    ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req,String email);
 }

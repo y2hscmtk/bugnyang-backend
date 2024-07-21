@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleCreateDto {
@@ -21,7 +22,8 @@ public class ArticleCreateDto {
         private String title; // 제목
 
         @NotBlank(message = "태그를 선택해주세요.")
-        private List<String> tags; // 태그
+        @Builder.Default
+        private List<String> tags = new ArrayList<>();
 
         @NotBlank(message = "원인을 작성해주세요.")
         private String cause; // 원인
