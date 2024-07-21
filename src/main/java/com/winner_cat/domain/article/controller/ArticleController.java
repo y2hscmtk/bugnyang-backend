@@ -1,5 +1,6 @@
 package com.winner_cat.domain.article.controller;
 
+import com.winner_cat.domain.article.dto.ArticleCreateDto;
 import com.winner_cat.domain.article.service.ArticleService;
 import com.winner_cat.global.response.ApiResponse;
 import jakarta.validation.Valid;

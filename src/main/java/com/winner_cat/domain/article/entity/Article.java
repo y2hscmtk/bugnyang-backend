@@ -4,6 +4,9 @@ import com.winner_cat.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -19,4 +22,11 @@ public class Article extends BaseEntity {
     private String title; // 게시글 제목
     private String cause; // 원인
     private String solution; // 해결 방법
+
+    @OneToMany(mappedBy = "articleId")
+    private List<ArticleTag> tags = new ArrayList<>();
+
+    public void changeTags(ArrayList<ArticleTag> articleTag) {
+        this.tags = articleTag;
+    }
 }
