@@ -1,8 +1,12 @@
 package com.winner_cat.domain.article.entity;
 
+import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,4 +23,14 @@ public class Article extends BaseEntity {
     private String title; // 게시글 제목
     private String cause; // 원인
     private String solution; // 해결 방법
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member author; // 게시글 작성자
+
+    @OneToMany(mappedBy = "article")
+    private List<ArticleTag> tags = new ArrayList<>();
+
+    public void changeTags(ArrayList<ArticleTag> articleTag) {
+        this.tags = articleTag;
+    }
 }
