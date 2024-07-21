@@ -17,4 +17,12 @@ public class Member {
     private String password;
     private String nickname; // 서비스에서 사용할 사용자의 이름
     private String role; // 사용자 권한
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
+
+    public void changeName(String name) {
+        this.nickname = name;
+    }
 }
