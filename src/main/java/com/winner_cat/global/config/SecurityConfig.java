@@ -1,5 +1,6 @@
 package com.winner_cat.global.config;
 
+import com.winner_cat.domain.oauth2.service.CustomOAuth2UserService;
 import com.winner_cat.global.jwt.filter.JWTFilter;
 import com.winner_cat.global.jwt.handler.CustomAccessDeniedHandler;
 import com.winner_cat.global.jwt.handler.CustomAuthenticationEntryPoint;
@@ -8,6 +9,7 @@ import com.winner_cat.global.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +26,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,6 +42,13 @@ public class SecurityConfig {
         http
                 .formLogin(auth -> auth.disable())
                 .httpBasic(auth -> auth.disable());
+
+        // oauth2 - google social login
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)));
+
 
         // JWT 검증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
         http
