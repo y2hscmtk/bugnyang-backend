@@ -4,6 +4,7 @@ import com.winner_cat.global.jwt.service.CustomUserDetailsService;
 import com.winner_cat.global.jwt.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,15 @@ public class JWTFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         // 요청 헤더에서 토큰 추출
         String authorizationHeader = request.getHeader("Authorization");
+
+        // 헤더에 존재하지 않는다면 쿠키에 존재하는지 확인
+        if (authorizationHeader == null && request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("Authorization")) {
+                    authorizationHeader = cookie.getValue();
+                }
+            }
+        }
 
         // 유효성 검증
         // 1. JWT가 헤더에 있어야 하며, Bearer 접두사로 시작해야함
