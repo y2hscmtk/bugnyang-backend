@@ -69,6 +69,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             userDTO = UserDTO.builder()
                     .username(member.getUsername())
+                    .email(member.getEmail())
                     .nickname(oAuth2Response.getName())
                     .role(member.getRole())
                     .build();
