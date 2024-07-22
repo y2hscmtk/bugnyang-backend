@@ -44,11 +44,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(username, role);
-
-        // Base64 인코딩
-        String encodedToken = Base64.getEncoder().encodeToString(token.getBytes());
-
-        response.addCookie(createCookie("Authorization", encodedToken)); // 쿠키에 토큰 삽입
+        response.addCookie(createCookie("Authorization", token)); // 쿠키에 토큰 삽입
         response.addHeader("Authorization", "Bearer " + token); // 헤더에 쿠키 삽입
 
         logger.info("JWT Token Created and Added to Response");

@@ -30,15 +30,6 @@ public class JWTFilter extends OncePerRequestFilter {
         // 요청 헤더에서 토큰 추출
         String authorizationHeader = request.getHeader("Authorization");
 
-        // 헤더에 존재하지 않는다면 쿠키에 존재하는지 확인
-        if (authorizationHeader == null && request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("Authorization")) {
-                    authorizationHeader = cookie.getValue();
-                }
-            }
-        }
-
         // 유효성 검증
         // 1. JWT가 헤더에 있어야 하며, Bearer 접두사로 시작해야함
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
