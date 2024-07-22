@@ -1,6 +1,7 @@
 package com.winner_cat.domain.article.controller;
 
 import com.winner_cat.domain.article.dto.ArticleCreateDto;
+import com.winner_cat.domain.article.dto.ArticleUpdateDto;
 import com.winner_cat.domain.article.service.ArticleService;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
@@ -27,12 +28,11 @@ public class ArticleController {
     }
 
     // 게시글 수정
-    @PatchMapping
+    @PatchMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> modifyArticle(
-            @RequestBody ArticleUpdateDto.Req req,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-            String email = customUserDetails.getEmail();
-            ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(req,email);
+            @PathVariable Integer articleId,
+            @RequestBody ArticleUpdateDto.Req req) {
+            ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
             return result;
     }
 
