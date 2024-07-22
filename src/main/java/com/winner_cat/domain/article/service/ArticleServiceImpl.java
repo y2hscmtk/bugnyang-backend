@@ -1,6 +1,7 @@
 package com.winner_cat.domain.article.service;
 
 import com.winner_cat.domain.article.dto.ArticleCreateDto;
+import com.winner_cat.domain.article.dto.ArticleUpdateDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
 import com.winner_cat.domain.article.entity.Tag;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -68,5 +70,45 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleCreateDto.CreateArticle createArticleResponse = new ArticleCreateDto.CreateArticle(savedArticle.getId(), savedArticle.getUpdatedAt());
         ApiResponse<ArticleCreateDto.CreateArticle> res = ApiResponse.onSuccess(createArticleResponse);
         return ResponseEntity.ok(res);
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<?>> modifyArticle(Integer articleId, ArticleUpdateDto.Req req) {
+        // 게시물 검색
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 게시물 업데이트
+        articleTagRepository.deleteByArticle(article); // 기존 게시글 삭제
+
+        article.changeTitle(req.getTitle());
+        article.changeCause(req.getCause());
+        article.changeSolution(req.getSolution());
+
+        // 새로운 태그 추가
+        List<String> tagList = req.getTags();
+        List<ArticleTag> articleTags = new ArrayList<>();
+
+        for (String tagName : tagList) {
+            Tag tag = tagRepository.findByTagName(tagName)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+
+            ArticleTag articleTag = ArticleTag.builder()
+                    .article(article)
+                    .tag(tag)
+                    .build();
+            articleTags.add(articleTagRepository.save(articleTag));
+        }
+
+
+        article.changeTag(articleTags);
+
+        articleRepository.flush(); // 변경 사항을 데이터베이스에 즉시 적용
+
+        // 수정된 게시글 정보 응답
+        ArticleUpdateDto.UpdateArticle data = new ArticleUpdateDto.UpdateArticle(article.getUpdatedAt());
+        ApiResponse<ArticleUpdateDto.UpdateArticle> res = ApiResponse.onSuccess(data);
+        return ResponseEntity.ok(res);
+
     }
 }
