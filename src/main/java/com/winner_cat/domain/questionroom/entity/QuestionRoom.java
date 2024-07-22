@@ -5,6 +5,9 @@ import com.winner_cat.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -19,4 +22,14 @@ public class QuestionRoom extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private QuestionState state; // 게시글 진행 상태
+
+    // 질문들
+    @OneToMany(mappedBy = "questionRoom")
+    @Builder.Default
+    private List<Question> questions = new ArrayList<>();
+
+    // 답변들
+    @OneToMany(mappedBy = "questionRoom")
+    @Builder.Default
+    private List<Answer> answers = new ArrayList<>();
 }

@@ -1,6 +1,6 @@
-package com.winner_cat.domain.oauth2.handler;
+package com.winner_cat.global.oauth2.handler;
 
-import com.winner_cat.domain.oauth2.dto.CustomOAuth2User;
+import com.winner_cat.global.oauth2.dto.CustomOAuth2User;
 import com.winner_cat.global.jwt.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
 

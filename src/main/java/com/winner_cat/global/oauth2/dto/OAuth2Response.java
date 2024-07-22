@@ -1,4 +1,4 @@
-package com.winner_cat.domain.oauth2.dto;
+package com.winner_cat.global.oauth2.dto;
 
 public interface OAuth2Response {
     // 제공자 (Ex. naver, google, ...)
