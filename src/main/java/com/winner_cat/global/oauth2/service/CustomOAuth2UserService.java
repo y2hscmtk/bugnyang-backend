@@ -1,11 +1,11 @@
-package com.winner_cat.domain.oauth2.service;
+package com.winner_cat.global.oauth2.service;
 
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
-import com.winner_cat.domain.oauth2.dto.CustomOAuth2User;
-import com.winner_cat.domain.oauth2.dto.GoogleResponse;
-import com.winner_cat.domain.oauth2.dto.OAuth2Response;
-import com.winner_cat.domain.oauth2.dto.UserDTO;
+import com.winner_cat.global.oauth2.dto.CustomOAuth2User;
+import com.winner_cat.global.oauth2.dto.GoogleResponse;
+import com.winner_cat.global.oauth2.dto.OAuth2Response;
+import com.winner_cat.global.oauth2.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

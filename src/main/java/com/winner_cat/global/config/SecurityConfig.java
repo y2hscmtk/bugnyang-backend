@@ -1,7 +1,7 @@
 package com.winner_cat.global.config;
 
-import com.winner_cat.domain.oauth2.handler.CustomSuccessHandler;
-import com.winner_cat.domain.oauth2.service.CustomOAuth2UserService;
+import com.winner_cat.global.oauth2.handler.CustomSuccessHandler;
+import com.winner_cat.global.oauth2.service.CustomOAuth2UserService;
 import com.winner_cat.global.jwt.filter.JWTFilter;
 import com.winner_cat.global.jwt.handler.CustomAccessDeniedHandler;
 import com.winner_cat.global.jwt.handler.CustomAuthenticationEntryPoint;
