@@ -1,5 +1,6 @@
 package com.winner_cat.domain.scream.controller;
 
+import com.winner_cat.domain.scream.dto.ScreamCreateDto;
 import com.winner_cat.domain.scream.service.ScreamService;
 import com.winner_cat.global.response.ApiResponse;
 import jakarta.validation.Valid;
