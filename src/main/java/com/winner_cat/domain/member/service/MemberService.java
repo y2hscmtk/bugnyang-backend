@@ -49,8 +49,8 @@ public class MemberService {
 
         // 동일 username 사용자 생성 방지
         if (memberRepository.existsMemberByEmail(joinDTO.getEmail())) {
-            System.out.println("이미 존재하는 회원");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 존재하는 회원입니다.");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.onFailure(ErrorStatus.EXSISTS_MEMBER, "이미 사용중인 이메일입니다."));
         }
 
         Member member = Member.builder()
@@ -61,7 +61,7 @@ public class MemberService {
                 .build();
         memberRepository.save(member);
 
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok().body(ApiResponse.onSuccess("회원가입 성공"));
     }
 
 }
