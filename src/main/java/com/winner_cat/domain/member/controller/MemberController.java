@@ -27,7 +27,7 @@ public class MemberController {
      * 회원 가입
      */
     @PostMapping("/join")
-    public ResponseEntity<?> joinProcess(@RequestBody JoinDTO joinDTO) {
+    public ResponseEntity<?> joinProcess(@Valid @RequestBody JoinDTO joinDTO) {
         return memberService.join(joinDTO);
     }
 }

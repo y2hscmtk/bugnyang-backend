@@ -32,7 +32,10 @@ public enum ErrorStatus implements BaseCode {
 
 	// JWT Error
 	TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "TOKEN4001", "토큰이 없거나 만료되었습니다."),
-	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다.");
+	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다."),
+
+	// member
+	EXSISTS_MEMBER(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 사용중인 이메일입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
