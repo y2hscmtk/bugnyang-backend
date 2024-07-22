@@ -16,6 +16,7 @@ public class Answer extends BaseEntity {
     @Column(name = "answer_id")
     private Long id;
 
+    @Column(length = 2000) // 길이를 2000자로 설정
     private String content; // 답변 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
