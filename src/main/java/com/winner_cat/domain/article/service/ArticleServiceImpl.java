@@ -111,4 +111,20 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok(res);
 
     }
+
+    @Override
+    public ResponseEntity<ApiResponse<?>> deleteArticle(Integer articleId){
+        // 게시물 검색
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 기존 태그 제거
+        articleTagRepository.deleteByArticle(article);
+
+        // 게시글 삭제
+        articleRepository.delete(article);
+
+        ApiResponse<String> res = ApiResponse.onSuccess("게시글이 삭제되었습니다.");
+        return ResponseEntity.ok(res);
+    }
 }

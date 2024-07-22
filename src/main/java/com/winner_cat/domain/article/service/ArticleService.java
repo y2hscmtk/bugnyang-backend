@@ -11,4 +11,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ArticleService {
     ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req,String email);
     ResponseEntity<ApiResponse<?>> modifyArticle(Integer articleId, ArticleUpdateDto.Req req);
+    ResponseEntity<ApiResponse<?>> deleteArticle(Integer articleId);
 }
