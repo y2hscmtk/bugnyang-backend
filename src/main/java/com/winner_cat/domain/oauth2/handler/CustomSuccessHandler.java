@@ -37,13 +37,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
+        String email = customUserDetails.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role);
+        String token = jwtUtil.createJwt(username,email,role);
         response.addCookie(createCookie("Authorization", token)); // 쿠키에 토큰 삽입
         response.addHeader("Authorization", "Bearer " + token); // 헤더에 쿠키 삽입
 

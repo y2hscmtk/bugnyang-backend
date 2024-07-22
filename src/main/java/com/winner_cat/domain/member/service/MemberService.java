@@ -36,7 +36,7 @@ public class MemberService {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_CORRECT);
         }
 
-        String accessToken = jwtUtil.createJwt(member.getEmail(), member.getRole());
+        String accessToken = jwtUtil.createJwt(member.getUsername(), member.getEmail(), member.getRole());
 
         // JWT 발급 성공시 Header에 삽입하여 반환
         HttpHeaders headers = new HttpHeaders();

@@ -53,8 +53,9 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String email, String role) {
+    public String createJwt(String username,String email, String role) {
         return Jwts.builder()
+                .claim("username", username)
                 .claim("email", email) // -> email 역할로?
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
