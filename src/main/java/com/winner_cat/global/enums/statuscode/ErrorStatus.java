@@ -35,7 +35,11 @@ public enum ErrorStatus implements BaseCode {
 	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다."),
 
 	// member
-	EXSISTS_MEMBER(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 사용중인 이메일입니다.");
+	EXSISTS_MEMBER(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 사용중인 이메일입니다."),
+
+
+	// Question
+	QUESTION_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTIONROOM4001", "존재하지 않는 질문방 입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
