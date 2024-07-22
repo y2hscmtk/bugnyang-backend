@@ -36,4 +36,13 @@ public class ArticleController {
             return result;
     }
 
+    // 게시글 삭제
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<ApiResponse<?>> deleteArticle(
+            @PathVariable Integer articleId) {
+        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId);
+        return result;
+    }
+
+
 }
