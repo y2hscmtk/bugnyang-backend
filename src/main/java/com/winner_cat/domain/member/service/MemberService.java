@@ -55,6 +55,7 @@ public class MemberService {
 
         Member member = Member.builder()
                 .nickname(joinDTO.getNickname())
+                .username(joinDTO.getEmail()) // 일반 사용자의 경우 username은 이메일과 동일하게
                 .email(joinDTO.getEmail())
                 .password(passwordEncoder.encode(joinDTO.getPassword()))
                 .role("ROLE_ADMIN") // 사용자 권한 설정 접두사 ROLE 작성 필요
