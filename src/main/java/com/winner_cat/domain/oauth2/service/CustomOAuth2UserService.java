@@ -45,6 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (member == null) {
             Member newMember = Member.builder()
                     .username(username) // 서비스 고유 식별 아이디
+                    .password(username) // 비밀번호 부분은 임시로 고유 식별자와 동일하게 설정
                     .nickname(oAuth2Response.getName())
                     .email(oAuth2Response.getEmail())
                     .role("ROLE_USER")

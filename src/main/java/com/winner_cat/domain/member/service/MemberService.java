@@ -53,10 +53,9 @@ public class MemberService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 존재하는 회원입니다.");
         }
 
-        // 새로운 회원 생성 - OAuth2 를 통한 회원가입을 수행할 경우 비밀번호는 저장하지 않아야함
         Member member = Member.builder()
+                .nickname(joinDTO.getNickname())
                 .email(joinDTO.getEmail())
-                // 비밀번호 암호화 해서 저장
                 .password(passwordEncoder.encode(joinDTO.getPassword()))
                 .role("ROLE_ADMIN") // 사용자 권한 설정 접두사 ROLE 작성 필요
                 .build();
