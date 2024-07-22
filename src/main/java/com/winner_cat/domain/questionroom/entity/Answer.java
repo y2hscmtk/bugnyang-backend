@@ -17,4 +17,8 @@ public class Answer extends BaseEntity {
     private Long id;
 
     private String content; // 답변 내용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_room_id")
+    private QuestionRoom questionRoom;
 }
