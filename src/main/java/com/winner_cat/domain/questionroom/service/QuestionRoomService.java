@@ -15,6 +15,7 @@ import com.winner_cat.global.exception.GeneralException;
 import com.winner_cat.global.gpt.config.ChatGPTConfig;
 import com.winner_cat.global.gpt.dto.ChatCompletionDto;
 import com.winner_cat.global.gpt.dto.ChatRequestMsgDto;
+import com.winner_cat.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +85,7 @@ public class QuestionRoomService {
                 .answer(gptAnswer)
                 .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return ResponseEntity.ok(ApiResponse.onSuccess(responseDTO));
     }
 
     private List<ChatRequestMsgDto> createMessagesFromHistory(List<Question> questions, List<Answer> answers) {
@@ -102,9 +103,9 @@ public class QuestionRoomService {
         }
 
         // 대화 흐름 출력
-        System.out.println("===== 대화 흐름 =====");
-        messages.forEach(msg -> System.out.println(msg.getRole() + ": " + msg.getContent()));
-        System.out.println("====================");
+//        System.out.println("===== 대화 흐름 =====");
+//        messages.forEach(msg -> System.out.println(msg.getRole() + ": " + msg.getContent()));
+//        System.out.println("====================");
 
         return messages;
     }
@@ -117,9 +118,6 @@ public class QuestionRoomService {
             Map<String, Object> requestBody = chatCompletionDto.toRequestBody();
             String requestBodyJson = objectMapper.writeValueAsString(requestBody);
 
-            // 직렬화된 JSON 확인
-            System.out.println("Request Body JSON: " + requestBodyJson);
-
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(chatGPTConfig.getPromptUrl()))
                     .header("Content-Type", "application/json")
@@ -129,18 +127,19 @@ public class QuestionRoomService {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // 응답을 출력하여 형식을 확인
-            System.out.println("GPT 응답 상태 코드: " + response.statusCode());
-            System.out.println("GPT 응답 본문: " + response.body());
+            // 응답 형태 확인
+//            System.out.println("GPT 응답 상태 코드: " + response.statusCode());
+//            System.out.println("GPT 응답 본문: " + response.body());
 
             if (response.statusCode() == 200) {
                 JsonNode jsonNode = objectMapper.readTree(response.body());
                 return jsonNode.path("choices").get(0).path("message").path("content").asText();
+            } else if(response.statusCode() == 400) {
+                throw new GeneralException(ErrorStatus.FAIL_TO_CREATE_ANSWER);
             } else {
                 throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
         }
     }
