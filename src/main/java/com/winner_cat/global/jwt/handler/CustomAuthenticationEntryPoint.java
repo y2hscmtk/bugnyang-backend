@@ -29,7 +29,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         log.error("Not Authenticated Request",authException);
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(objectMapper.writeValueAsString(
                 ApiResponse.onFailure(
                         ErrorStatus.TOKEN_ERROR,
