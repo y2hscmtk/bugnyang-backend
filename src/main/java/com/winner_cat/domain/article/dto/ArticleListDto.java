@@ -12,6 +12,7 @@ public class ArticleListDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ArticleResponse {
+        private Long id;
         private String title; // 게시글 제목
         @Builder.Default
         private List<String> tags = new ArrayList<>(); // 태그
