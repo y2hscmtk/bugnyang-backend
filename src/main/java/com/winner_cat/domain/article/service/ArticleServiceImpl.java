@@ -13,11 +13,13 @@ import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
+import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -152,5 +154,39 @@ public class ArticleServiceImpl implements ArticleService{
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponse));
+    }
+
+    // 내가 작성한 게시글 조회(미리보기)
+    @Override
+    public ResponseEntity<ApiResponse<?>> getMyArticles(String email) {
+        // 작성자 정보 조회
+        Member author = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 게시글 조회
+        List<Article> articles = articleRepository.findByAuthor(author);
+
+        List<ArticleListDto.ArticleResponse> articleResponses = new ArrayList<>();
+        for (Article article : articles) {
+            // 각 게시물마다 태그 조회
+            List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
+            List<String> articleTags = new ArrayList<>();
+
+            for (ArticleTag articleTag : articleTagsList) {
+                String tagName = articleTag.getTag().getTagName();
+                articleTags.add(tagName);
+            }
+
+            // 게시글 응답 생성
+            articleResponses.add(ArticleListDto.ArticleResponse.builder()
+                    .title(article.getTitle())
+                    .tags(articleTags)
+                    .cause(article.getCause())
+                    .solution(article.getSolution())
+                    .updatedAt(article.getUpdatedAt())
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponses));
     }
 }
