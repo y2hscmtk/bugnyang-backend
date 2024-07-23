@@ -44,4 +44,8 @@ public class QuestionRoom extends BaseEntity {
     public void changeName(String roomName) {
         this.roomName = roomName;
     }
+
+    public void changeState(QuestionState state) {
+        this.state = state;
+    }
 }
