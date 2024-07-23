@@ -14,6 +14,7 @@ public class Member {
     private Long id;
     @Column(unique = true)
     private String username; // 서비스 사용자 고유 식별 키
+    @Column(unique = true)
     private String email; // JWT 검증 등에서 사용될 사용자 이름
     private String password;
     private String nickname; // 서비스에서 사용할 사용자의 이름
