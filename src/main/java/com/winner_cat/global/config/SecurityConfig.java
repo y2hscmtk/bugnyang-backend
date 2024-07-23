@@ -1,7 +1,7 @@
 package com.winner_cat.global.config;
 
-import com.winner_cat.domain.oauth2.handler.CustomSuccessHandler;
-import com.winner_cat.domain.oauth2.service.CustomOAuth2UserService;
+import com.winner_cat.global.oauth2.handler.CustomSuccessHandler;
+import com.winner_cat.global.oauth2.service.CustomOAuth2UserService;
 import com.winner_cat.global.jwt.filter.JWTFilter;
 import com.winner_cat.global.jwt.handler.CustomAccessDeniedHandler;
 import com.winner_cat.global.jwt.handler.CustomAuthenticationEntryPoint;
@@ -92,7 +92,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
                         .requestMatchers("/login", "/join", "/oauth2/**").permitAll()
-                        .requestMatchers("/test").hasRole("ADMIN")
+                        .requestMatchers("/test").hasAnyRole("ADMIN","USER")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
                 );

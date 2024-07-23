@@ -1,6 +1,6 @@
-package com.winner_cat.domain.oauth2.handler;
+package com.winner_cat.global.oauth2.handler;
 
-import com.winner_cat.domain.oauth2.dto.CustomOAuth2User;
+import com.winner_cat.global.oauth2.dto.CustomOAuth2User;
 import com.winner_cat.global.jwt.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -37,7 +36,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
+        System.out.println("username = " + username);
         String email = customUserDetails.getEmail();
+        System.out.println("email = " + email);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -61,7 +62,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setMaxAge(60 * 60 * 60);
         // cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         return cookie;
     }
 }
