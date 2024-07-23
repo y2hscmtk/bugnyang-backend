@@ -1,9 +1,8 @@
 package com.winner_cat.domain.questionroom.controller;
 
 import com.winner_cat.domain.questionroom.dto.QuestionRequestDTO;
-import com.winner_cat.domain.questionroom.service.QuestionRoomService;
+import com.winner_cat.domain.questionroom.service.QuestionService;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
-import com.winner_cat.global.jwt.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,19 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/question")
-public class QuestionRoomController {
-    private final QuestionRoomService questionRoomService;
+public class QuestionController {
+    private final QuestionService questionService;
 
+    /**
+     * 질문 방에서 질문하기
+     */
     @PostMapping
     public ResponseEntity<?> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO) {
-        return questionRoomService.askQuestion(questionRequestDTO);
+        return questionService.askQuestion(questionRequestDTO);
     }
 
+    /**
+     * 새로운 질문 시작하기
+     * 질문방 생성 후, 새로운 질문을 바탕으로 질문방 제목과 첫번째 답변 생성하여 반환
+     */
     @PostMapping("/new")
     public ResponseEntity<?> askQuestion(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody String question) {
         String email = userDetails.getEmail();
-        return questionRoomService.startNewQuestion(email,question);
+        return questionService.startNewQuestion(email,question);
     }
 }

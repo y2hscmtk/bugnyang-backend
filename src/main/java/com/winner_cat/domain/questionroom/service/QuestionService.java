@@ -21,7 +21,6 @@ import com.winner_cat.global.gpt.dto.ChatCompletionDto;
 import com.winner_cat.global.gpt.dto.ChatRequestMsgDto;
 import com.winner_cat.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,7 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class QuestionRoomService {
+public class QuestionService {
     private final QuestionRoomRepository questionRoomRepository;
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
