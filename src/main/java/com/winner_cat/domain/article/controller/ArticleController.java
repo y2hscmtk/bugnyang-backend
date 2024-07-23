@@ -5,7 +5,6 @@ import com.winner_cat.domain.article.dto.ArticleUpdateDto;
 import com.winner_cat.domain.article.service.ArticleService;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,4 +51,12 @@ public class ArticleController {
         return result;
     }
 
+    // 내가 작성한 게시글 조회 (미리보기)
+    @GetMapping("/mine")
+    public ResponseEntity<ApiResponse<?>> getMyArticles(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.getMyArticles(email);
+        return result;
+    }
 }
