@@ -20,6 +20,9 @@ public class QuestionRoom extends BaseEntity {
     @Column(name = "question_room_id")
     private Long id;
 
+    @Column(name = "name")
+    private String roomName;
+
     @Enumerated(EnumType.STRING)
     private QuestionState state; // 게시글 진행 상태
 
