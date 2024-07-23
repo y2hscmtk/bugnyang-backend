@@ -30,7 +30,7 @@ public class ArticleController {
     // 게시글 수정
     @PatchMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> modifyArticle(
-            @PathVariable Integer articleId,
+            @PathVariable Long articleId,
             @RequestBody ArticleUpdateDto.Req req) {
             ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
             return result;
@@ -39,7 +39,7 @@ public class ArticleController {
     // 게시글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> deleteArticle(
-            @PathVariable Integer articleId) {
+            @PathVariable Long articleId) {
         ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId);
         return result;
     }
@@ -47,7 +47,7 @@ public class ArticleController {
     // 게시글 상세 조회
     @GetMapping("/detail/{articleId}")
     public ResponseEntity<ApiResponse<?>> getArticleDetail(
-            @RequestParam("articleId") Long articleId ) {
+            @PathVariable("articleId") Long articleId ) {
         ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(articleId);
         return result;
     }

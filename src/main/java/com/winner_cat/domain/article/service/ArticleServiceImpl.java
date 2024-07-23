@@ -1,6 +1,7 @@
 package com.winner_cat.domain.article.service;
 
 import com.winner_cat.domain.article.dto.ArticleCreateDto;
+import com.winner_cat.domain.article.dto.ArticleListDto;
 import com.winner_cat.domain.article.dto.ArticleUpdateDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
@@ -73,7 +74,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> modifyArticle(Integer articleId, ArticleUpdateDto.Req req) {
+    public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req) {
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
@@ -113,7 +114,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> deleteArticle(Integer articleId){
+    public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId){
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
@@ -126,5 +127,30 @@ public class ArticleServiceImpl implements ArticleService{
 
         ApiResponse<String> res = ApiResponse.onSuccess("게시글이 삭제되었습니다.");
         return ResponseEntity.ok(res);
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        List<String> articleTags = new ArrayList<>();
+        List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
+
+        for (ArticleTag articleTag : articleTagsList) {
+            String tagName = articleTag.getTag().getTagName();
+            articleTags.add(tagName);
+        }
+
+
+        ArticleListDto.ArticleResponse articleResponse = ArticleListDto.ArticleResponse.builder()
+                .title(article.getTitle())
+                .tags(articleTags)
+                .cause(article.getCause())
+                .solution(article.getSolution())
+                .updatedAt(article.getUpdatedAt())
+                .build();
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponse));
     }
 }
