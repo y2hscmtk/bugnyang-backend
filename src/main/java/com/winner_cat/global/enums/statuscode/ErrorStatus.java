@@ -25,7 +25,7 @@ public enum ErrorStatus implements BaseCode {
 	ACCOUNT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH4004", "자격증명이 만료되었습니다."),
 
 	// Article
-	ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "해당하는 게시물이 없습니다"),
+	ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "삭제되었거나 존재하지 않는 게시글입니다."),
 
 	// Tag
 	TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "해당하는 태그가 없습니다"),

@@ -1,5 +1,7 @@
 package com.winner_cat.domain.scrap.entity;
 
+import com.winner_cat.domain.article.entity.Article;
+import com.winner_cat.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,5 +17,11 @@ public class Scrap {
     @Column(name = "scrap_id")
     private Long id;
 
-    // Member, Article 연관관계 작성 필요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private Article article;
 }
