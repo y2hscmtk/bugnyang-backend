@@ -44,5 +44,12 @@ public class ArticleController {
         return result;
     }
 
+    // 게시글 상세 조회
+    @GetMapping("/detail/{articleId}")
+    public ResponseEntity<ApiResponse<?>> getArticleDetail(
+            @RequestParam("articleId") Long articleId ) {
+        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(articleId);
+        return result;
+    }
 
 }
