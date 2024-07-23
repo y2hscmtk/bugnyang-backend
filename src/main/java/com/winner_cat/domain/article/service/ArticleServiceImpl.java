@@ -179,10 +179,9 @@ public class ArticleServiceImpl implements ArticleService{
 
             // 게시글 응답 생성
             articleResponses.add(ArticleListDto.ArticleResponse.builder()
+                    .id(article.getId())
                     .title(article.getTitle())
                     .tags(articleTags)
-                    .cause(article.getCause())
-                    .solution(article.getSolution())
                     .updatedAt(article.getUpdatedAt())
                     .build());
         }
