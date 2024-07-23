@@ -24,7 +24,7 @@ public class ScreamCreateDto {
         }
     }
 
-    // 게시글 작성
+    // 아우성 작성
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
