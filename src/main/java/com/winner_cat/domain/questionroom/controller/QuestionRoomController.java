@@ -1,8 +1,11 @@
 package com.winner_cat.domain.questionroom.controller;
 
+import com.winner_cat.domain.questionroom.dto.ChangeQuestionRoomStateDTO;
 import com.winner_cat.domain.questionroom.service.QuestionRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +28,15 @@ public class QuestionRoomController {
      */
     public ResponseEntity<?> getQuestionRoomDetail() {
         return null;
+    }
+
+    /**
+     * 질문방 상태 변경
+     */
+    @PatchMapping("/state")
+    public ResponseEntity<?> changeState(
+            @RequestBody ChangeQuestionRoomStateDTO requestDto) {
+        return questionRoomService
+                .changeState(requestDto.getQuestionRoomId(), requestDto.getState());
     }
 }
