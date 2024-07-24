@@ -194,18 +194,19 @@ public class ArticleServiceImpl implements ArticleService{
         // 1. pageable 객체를 바탕으로 전체 게시글 엔티티 조회
         Page<Article> articlePage = articleRepository.findAll(pageable);
         // 2. 반환 DTO 생성 및 반환
-        List<ArticlePreviewDto> resultDtoList = new ArrayList<>();
+        List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
             List<String> tagList = new ArrayList<>();
             // 태그 목록들 얻어와서 반환 DTO에 삽입
             article.getTags().forEach(articleTag ->
                     tagList.add(articleTag.getTag().getTagName()));
-            ArticlePreviewDto resultDto = ArticlePreviewDto.builder()
+            ArticlePreviewDto.AllArticlePreview allArticlePreviewDto
+                    = ArticlePreviewDto.AllArticlePreview.builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
                     .tagList(tagList)
                     .build();
-            resultDtoList.add(resultDto);
+            resultDtoList.add(allArticlePreviewDto);
         }
         return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
     }
@@ -220,10 +221,11 @@ public class ArticleServiceImpl implements ArticleService{
                 = articleTagRepository.findArticleTagPageByTag(tag, pageable);
         List<ArticleTag> articleTagList = articleTagPage.getContent();
         // 3. 반환 DTO 생성 후 반환
-        List<ArticlePreviewDto> resultDtoList = new ArrayList<>();
+        List<ArticlePreviewDto.TagArticlePreview> resultDtoList = new ArrayList<>();
         for (ArticleTag articleTag : articleTagList) {
             Article article = articleTag.getArticle();
-            ArticlePreviewDto result = ArticlePreviewDto.builder()
+            ArticlePreviewDto.TagArticlePreview result = ArticlePreviewDto.TagArticlePreview
+                    .builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
                     .build();

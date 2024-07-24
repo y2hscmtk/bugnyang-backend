@@ -23,7 +23,7 @@ public class ArticleController {
             @RequestBody ArticleCreateDto.Req req,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getEmail();
-        ResponseEntity<ApiResponse<?>> result = articleService.createArticle(req,email);
+        ResponseEntity<ApiResponse<?>> result = articleService.createArticle(req, email);
         return result;
     }
 
@@ -32,8 +32,8 @@ public class ArticleController {
     public ResponseEntity<ApiResponse<?>> modifyArticle(
             @PathVariable Long articleId,
             @RequestBody ArticleUpdateDto.Req req) {
-            ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
-            return result;
+        ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
+        return result;
     }
 
     // 게시글 삭제
@@ -47,7 +47,7 @@ public class ArticleController {
     // 게시글 상세 조회
     @GetMapping("/detail/{articleId}")
     public ResponseEntity<ApiResponse<?>> getArticleDetail(
-            @PathVariable("articleId") Long articleId ) {
+            @PathVariable("articleId") Long articleId) {
         ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(articleId);
         return result;
     }
@@ -65,5 +65,13 @@ public class ArticleController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllArticle(Pageable pageable) {
         return articleService.getAllArticle(pageable);
+    }
+
+    // 태그로 게시글 조회
+    @GetMapping("/tag")
+    public ResponseEntity<?> getArticleByTag(
+            @RequestParam String tagName,
+            Pageable pageable) {
+        return articleService.getArticleByTag(tagName, pageable);
     }
 }
