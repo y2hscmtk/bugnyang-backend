@@ -210,6 +210,6 @@ public class ArticleServiceImpl implements ArticleService{
                     .build();
             resultDtoList.add(resultDto);
         }
-        return ResponseEntity.ok().body(resultDtoList);
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
     }
 }
