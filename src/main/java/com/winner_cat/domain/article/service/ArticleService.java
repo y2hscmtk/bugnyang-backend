@@ -15,4 +15,5 @@ public interface ArticleService {
     ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId );
     ResponseEntity<ApiResponse<?>> getMyArticles(String email);
     ResponseEntity<?> getAllArticle(Pageable pageable);
+    ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable);
 }
