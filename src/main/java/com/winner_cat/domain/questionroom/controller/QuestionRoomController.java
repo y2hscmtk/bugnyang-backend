@@ -4,10 +4,7 @@ import com.winner_cat.domain.questionroom.dto.ChangeQuestionRoomStateDTO;
 import com.winner_cat.domain.questionroom.service.QuestionRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/question-room")
@@ -26,8 +23,10 @@ public class QuestionRoomController {
      * 질문방 상세보기
      * 특정 질문 방에서 나눈 대화 반환
      */
-    public ResponseEntity<?> getQuestionRoomDetail() {
-        return null;
+    @GetMapping("/{questionRoomId}")
+    public ResponseEntity<?> getQuestionRoomDetail(
+            @PathVariable("questionRoomId") Long questionRoomId) {
+        return questionRoomService.getQuestionRoomDetail(questionRoomId);
     }
 
     /**
