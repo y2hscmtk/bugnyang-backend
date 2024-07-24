@@ -9,7 +9,7 @@ import java.util.List;
 // 아이디, 제목, 태그
 @Data
 @Builder
-public class AllArticlePreviewDto {
+public class ArticlePreviewDto {
     private Long articleId;
     private String title;
     @Builder.Default

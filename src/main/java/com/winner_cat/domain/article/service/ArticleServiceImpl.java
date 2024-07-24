@@ -1,6 +1,6 @@
 package com.winner_cat.domain.article.service;
 
-import com.winner_cat.domain.article.dto.AllArticlePreviewDto;
+import com.winner_cat.domain.article.dto.ArticlePreviewDto;
 import com.winner_cat.domain.article.dto.ArticleCreateDto;
 import com.winner_cat.domain.article.dto.ArticleListDto;
 import com.winner_cat.domain.article.dto.ArticleUpdateDto;
@@ -14,7 +14,6 @@ import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
-import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
@@ -22,12 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -197,18 +194,40 @@ public class ArticleServiceImpl implements ArticleService{
         // 1. pageable 객체를 바탕으로 전체 게시글 엔티티 조회
         Page<Article> articlePage = articleRepository.findAll(pageable);
         // 2. 반환 DTO 생성 및 반환
-        List<AllArticlePreviewDto> resultDtoList = new ArrayList<>();
+        List<ArticlePreviewDto> resultDtoList = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
             List<String> tagList = new ArrayList<>();
             // 태그 목록들 얻어와서 반환 DTO에 삽입
             article.getTags().forEach(articleTag ->
                     tagList.add(articleTag.getTag().getTagName()));
-            AllArticlePreviewDto resultDto = AllArticlePreviewDto.builder()
+            ArticlePreviewDto resultDto = ArticlePreviewDto.builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
                     .tagList(tagList)
                     .build();
             resultDtoList.add(resultDto);
+        }
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
+    }
+
+    @Override
+    public ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable) {
+        // 1. 해당하는 태그가 실존하는지 확인한다.
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+        // 2. ArticleTag 레파지토리에서 연관관계 정보를 바탕으로 해당하는 게시글들을 페이지로 얻어온다.
+        Page<ArticleTag> articleTagPage
+                = articleTagRepository.findArticleTagPageByTag(tag, pageable);
+        List<ArticleTag> articleTagList = articleTagPage.getContent();
+        // 3. 반환 DTO 생성 후 반환
+        List<ArticlePreviewDto> resultDtoList = new ArrayList<>();
+        for (ArticleTag articleTag : articleTagList) {
+            Article article = articleTag.getArticle();
+            ArticlePreviewDto result = ArticlePreviewDto.builder()
+                    .articleId(article.getId())
+                    .title(article.getTitle())
+                    .build();
+            resultDtoList.add(result);
         }
         return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
     }
