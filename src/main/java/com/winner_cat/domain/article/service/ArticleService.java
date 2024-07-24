@@ -4,6 +4,7 @@ import com.winner_cat.domain.article.dto.ArticleCreateDto;
 import com.winner_cat.domain.article.dto.ArticleUpdateDto;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
@@ -13,4 +14,5 @@ public interface ArticleService {
     ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId);
     ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId );
     ResponseEntity<ApiResponse<?>> getMyArticles(String email);
+    ResponseEntity<?> getAllArticle(Pageable pageable);
 }

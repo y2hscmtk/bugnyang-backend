@@ -6,6 +6,7 @@ import com.winner_cat.domain.article.service.ArticleService;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -58,5 +59,11 @@ public class ArticleController {
         String email = customUserDetails.getEmail();
         ResponseEntity<ApiResponse<?>> result = articleService.getMyArticles(email);
         return result;
+    }
+
+    // 전체 게시글 조회 - 미리보기
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllArticle(Pageable pageable) {
+        return articleService.getAllArticle(pageable);
     }
 }
