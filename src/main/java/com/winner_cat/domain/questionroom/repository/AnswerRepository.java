@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface AnswerRepository extends JpaRepository<Answer,Long> {
     List<Answer> findTop5ByQuestionRoomOrderByCreatedAtDesc(QuestionRoom questionRoom);
+    // 시간 순으로 질문방에 소속된 답변들 얻어오기
+    List<Answer> findByQuestionRoomOrderByCreatedAt(QuestionRoom questionRoom);
 }
