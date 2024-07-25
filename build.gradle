@@ -5,7 +5,13 @@ plugins {
 }
 
 group = 'com.likelion'
-version = '0.0.1-SNAPSHOT'
+
+// jar 빌드시 plain 삭제 - ci/cd - 빌드 시간 단축
+jar {
+	archiveBaseName = 'winnercat'
+	version = '0.0.1-SNAPSHOT'
+	enabled = false
+}
 
 java {
 	toolchain {
