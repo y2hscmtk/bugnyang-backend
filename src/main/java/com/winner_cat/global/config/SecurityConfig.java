@@ -91,7 +91,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
-                        .requestMatchers("/login", "/join", "/oauth2/**").permitAll()
+                        .requestMatchers("/login", "/join", "/oauth2/**","/ci").permitAll()
                         .requestMatchers("/test").hasAnyRole("ADMIN","USER")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
