@@ -2,9 +2,9 @@ name: Winner Cat
 
 on:
   push:
-    branches: [ "CI/#48-ci-pipeline-choi76" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "CI/#48-ci-pipeline-choi76" ]
+    branches: [ "dev" ]
   workflow_dispatch:
 
 
