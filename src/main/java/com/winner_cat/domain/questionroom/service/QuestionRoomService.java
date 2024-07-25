@@ -1,8 +1,13 @@
 package com.winner_cat.domain.questionroom.service;
 
+import com.winner_cat.domain.article.dto.ArticleListDto;
+import com.winner_cat.domain.article.entity.Article;
+import com.winner_cat.domain.member.entity.Member;
+import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.domain.questionroom.dto.AnswerDto;
 import com.winner_cat.domain.questionroom.dto.CheckChattingRoomDetailDto;
 import com.winner_cat.domain.questionroom.dto.QuestionDto;
+import com.winner_cat.domain.questionroom.dto.QuestionRoomListDto;
 import com.winner_cat.domain.questionroom.entity.Answer;
 import com.winner_cat.domain.questionroom.entity.Question;
 import com.winner_cat.domain.questionroom.entity.QuestionRoom;
@@ -12,10 +17,13 @@ import com.winner_cat.domain.questionroom.repository.QuestionRepository;
 import com.winner_cat.domain.questionroom.repository.QuestionRoomRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
+import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +37,7 @@ public class QuestionRoomService {
     private final QuestionRoomRepository questionRoomRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 질문 방 상태 수정
@@ -78,5 +87,30 @@ public class QuestionRoomService {
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
+    }
+
+    /**
+     * 질문방 미리보기
+     */
+    public ResponseEntity<?> getQuestionRoomPreview(String email) {
+        // 작성자 정보 조회
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 질문방 조회
+        List<QuestionRoom> questionRooms = questionRoomRepository.findQuestionRoomByMember(member);
+
+        // 응답 생성
+        List<QuestionRoomListDto.QuestionRoomResponse> questionRoomResponses = new ArrayList<>();
+        for (QuestionRoom questionRoom : questionRooms) {
+            questionRoomResponses.add(QuestionRoomListDto.QuestionRoomResponse.builder()
+                    .id(questionRoom.getId())
+                    .roomName(questionRoom.getRoomName())
+                    .state(questionRoom.getState())
+                    .updatedAt(questionRoom.getUpdatedAt())
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(questionRoomResponses));
     }
 }

@@ -1,7 +1,9 @@
 package com.winner_cat.domain.questionroom.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import com.winner_cat.domain.questionroom.entity.enums.QuestionState;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
