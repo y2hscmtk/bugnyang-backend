@@ -11,6 +11,7 @@ public class QuestionRoomListDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class QuestionRoomResponse {
+        private Long id;
         private String roomName;
         private QuestionState state;
         private LocalDateTime updatedAt;

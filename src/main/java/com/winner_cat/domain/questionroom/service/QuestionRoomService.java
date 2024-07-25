@@ -104,6 +104,7 @@ public class QuestionRoomService {
         List<QuestionRoomListDto.QuestionRoomResponse> questionRoomResponses = new ArrayList<>();
         for (QuestionRoom questionRoom : questionRooms) {
             questionRoomResponses.add(QuestionRoomListDto.QuestionRoomResponse.builder()
+                    .id(questionRoom.getId())
                     .roomName(questionRoom.getRoomName())
                     .state(questionRoom.getState())
                     .updatedAt(questionRoom.getUpdatedAt())
