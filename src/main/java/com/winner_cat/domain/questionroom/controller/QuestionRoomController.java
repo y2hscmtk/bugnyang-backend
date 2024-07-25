@@ -20,7 +20,8 @@ public class QuestionRoomController {
     @GetMapping
     public ResponseEntity<?> getQuestionRoomPreview(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return questionRoomService.getQuestionRoomPreview(customUserDetails);
+        String email = customUserDetails.getEmail();
+        return questionRoomService.getQuestionRoomPreview(email);
     }
 
     /**
