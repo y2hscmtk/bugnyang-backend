@@ -55,9 +55,9 @@ public class ArticleController {
     // 내가 작성한 게시글 조회 (미리보기)
     @GetMapping("/mine")
     public ResponseEntity<ApiResponse<?>> getMyArticles(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @AuthenticationPrincipal CustomUserDetails customUserDetails, Pageable pageable) {
         String email = customUserDetails.getEmail();
-        ResponseEntity<ApiResponse<?>> result = articleService.getMyArticles(email);
+        ResponseEntity<ApiResponse<?>> result = articleService.getMyArticles(email, pageable);
         return result;
     }
 
