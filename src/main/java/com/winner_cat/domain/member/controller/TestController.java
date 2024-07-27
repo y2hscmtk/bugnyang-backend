@@ -13,6 +13,14 @@ public class TestController {
      */
     @GetMapping("/test")
     public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return "Welcome " + userDetails.getEmail();
+        return "Welcome" + userDetails.getEmail();
+    }
+
+    /**
+     * CI Test
+     */
+    @GetMapping("/ci")
+    public String ci() {
+        return "ci success!";
     }
 }
