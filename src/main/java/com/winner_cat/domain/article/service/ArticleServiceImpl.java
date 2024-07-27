@@ -158,15 +158,17 @@ public class ArticleServiceImpl implements ArticleService{
 
     // 내가 작성한 게시글 조회(미리보기)
     @Override
-    public ResponseEntity<ApiResponse<?>> getMyArticles(String email) {
+    public ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable) {
         // 작성자 정보 조회
         Member author = memberRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 게시글 조회
-        List<Article> articles = articleRepository.findByAuthor(author);
-
+        // 페이징된 게시글 조회
+        Page<Article> articlePage = articleRepository.findByAuthor(author, pageable);
+        List<Article> articles = articlePage.getContent();
         List<ArticleListDto.ArticleResponse> articleResponses = new ArrayList<>();
+
+
         for (Article article : articles) {
             // 각 게시물마다 태그 조회
             List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
