@@ -16,4 +16,5 @@ public interface ArticleService {
     ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable);
     ResponseEntity<?> getAllArticle(Pageable pageable);
     ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable);
+    ResponseEntity<?> getArticleRecommendByTag(String tagName, Pageable pageable);
 }

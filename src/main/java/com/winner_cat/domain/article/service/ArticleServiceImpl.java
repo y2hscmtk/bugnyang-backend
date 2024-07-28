@@ -288,4 +288,34 @@ public class ArticleServiceImpl implements ArticleService{
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
+
+    /**
+     * 태그로 추천 게시글 반환
+     */
+    @Override
+    public ResponseEntity<?> getArticleRecommendByTag(String tagName, Pageable pageable) {
+        // 1. 해당하는 태그가 실존하는지 확인한다.
+        Tag tagEntity = tagRepository.findByTagName(tagName)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+        // 2. ArticleTag 레파지토리에서 연관관계 정보를 바탕으로 해당하는 게시글들을 페이지로 얻어온다.
+        Page<ArticleTag> articleTagPage
+                = articleTagRepository.findArticleTagPageByTag(tagEntity, pageable);
+        List<ArticleTag> articleTagList = articleTagPage.getContent();
+        // 3. 반환 DTO 생성
+        List<ArticlePreviewDto.TagArticlePreview> articlePreviewList = new ArrayList<>();
+        int totalPages = articleTagPage.getTotalPages(); // 총 페이지 수
+        for (ArticleTag articleTag : articleTagList) {
+            Article article = articleTag.getArticle();
+            articlePreviewList.add(ArticlePreviewDto.TagArticlePreview.builder()
+                    .articleId(article.getId())
+                    .title(article.getTitle())
+                    .cause(article.getCause())
+                    .build());
+        }
+        ArticlePreviewDto.TagArticlePreviewResponse result = ArticlePreviewDto.TagArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(articlePreviewList)
+                .build();
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
+    }
 }
