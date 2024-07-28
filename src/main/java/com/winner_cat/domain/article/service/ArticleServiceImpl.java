@@ -247,27 +247,45 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
+    /**
+     * 태그로 게시글 조회 - 미리보기
+     */
     @Override
     public ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable) {
         // 1. 해당하는 태그가 실존하는지 확인한다.
-        Tag tag = tagRepository.findByTagName(tagName)
+        Tag tagEntity = tagRepository.findByTagName(tagName)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
         // 2. ArticleTag 레파지토리에서 연관관계 정보를 바탕으로 해당하는 게시글들을 페이지로 얻어온다.
         Page<ArticleTag> articleTagPage
-                = articleTagRepository.findArticleTagPageByTag(tag, pageable);
+                = articleTagRepository.findArticleTagPageByTag(tagEntity, pageable);
         List<ArticleTag> articleTagList = articleTagPage.getContent();
         int totalPages = articleTagPage.getTotalPages();
         // 3. 반환 DTO 생성 후 반환
-        List<ArticlePreviewDto.TagArticlePreviewResponse> resultDtoList = new ArrayList<>();
+        List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (ArticleTag articleTag : articleTagList) {
             Article article = articleTag.getArticle();
-            ArticlePreviewDto.TagArticlePreviewResponse result = ArticlePreviewDto.TagArticlePreviewResponse
+            List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
+            // 관련 태그들 얻어오기
+            Tag tag = articleTag.getTag();
+            tagResponseDtoList.add(
+                    TagResponseDto.builder()
+                            .tagName(tag.getTagName())
+                            .colorCode(tag.getColorCode())
+                            .build()
+            );
+            ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
                     .builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
+                    .tagList(tagResponseDtoList)
                     .build();
             resultDtoList.add(result);
         }
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(resultDtoList)
+                .build();
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 }
