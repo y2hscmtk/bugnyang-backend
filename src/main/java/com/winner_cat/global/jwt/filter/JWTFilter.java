@@ -4,7 +4,6 @@ import com.winner_cat.global.jwt.service.CustomUserDetailsService;
 import com.winner_cat.global.jwt.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 // 사용자 요청으로부터 토큰 추출 후 유효성 검증 수행
 @RequiredArgsConstructor
@@ -21,12 +21,19 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final String[] permitAllPaths;
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        // 예외 경로에 대해서는 필터링을 건너뛰기
+        if (shouldNotFilter(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 요청 헤더에서 토큰 추출
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -43,7 +50,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
                 if (userDetails != null) {
-                    //UserDetsils, Password, Role -> 접근권한 인증 Token 생성
+                    //UserDetails, Password, Role -> 접근권한 인증 Token 생성
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
@@ -55,10 +62,14 @@ public class JWTFilter extends OncePerRequestFilter {
                             .setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-
         }
 
-        filterChain.doFilter(request,response); // 다음 필터로
+        filterChain.doFilter(request, response); // 다음 필터로
+    }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return Arrays.stream(permitAllPaths).anyMatch(path::startsWith);
     }
 }
