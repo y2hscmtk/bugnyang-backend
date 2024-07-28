@@ -39,8 +39,8 @@ public class ArticleDataLoader implements CommandLineRunner {
         Member member2 = createMember("username2","testuser2@example.com","1234", "USER2", "ROLE_USER");
 
         // 태그 생성
-        Tag tagJava = createTag("java");
-        Tag tagSwift = createTag("swift");
+        Tag tagJava = createTag("java","#FF3F3F");
+        Tag tagSwift = createTag("swift","#6630ff");
 
         // 게시글 생성
         Article member1Article1
@@ -85,9 +85,10 @@ public class ArticleDataLoader implements CommandLineRunner {
         return articleRepository.save(article);
     }
 
-    public Tag createTag(String tagName) {
+    public Tag createTag(String tagName,String colorCode) {
         Tag tag = Tag.builder()
                 .tagName(tagName)
+                .colorCode(colorCode)
                 .build();
         return tagRepository.save(tag);
     }

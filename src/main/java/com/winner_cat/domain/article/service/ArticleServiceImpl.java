@@ -1,9 +1,6 @@
 package com.winner_cat.domain.article.service;
 
-import com.winner_cat.domain.article.dto.ArticlePreviewDto;
-import com.winner_cat.domain.article.dto.ArticleCreateDto;
-import com.winner_cat.domain.article.dto.ArticleListDto;
-import com.winner_cat.domain.article.dto.ArticleUpdateDto;
+import com.winner_cat.domain.article.dto.*;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
 import com.winner_cat.domain.article.entity.Tag;
@@ -121,7 +118,7 @@ public class ArticleServiceImpl implements ArticleService{
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
 
-        // 기존 태그 제거
+        // 연관관계 매핑 제거
         articleTagRepository.deleteByArticle(article);
 
         // 게시글 삭제
@@ -198,10 +195,13 @@ public class ArticleServiceImpl implements ArticleService{
         // 2. 반환 DTO 생성 및 반환
         List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
-            List<String> tagList = new ArrayList<>();
+            List<TagResponseDto> tagList = new ArrayList<>();
             // 태그 목록들 얻어와서 반환 DTO에 삽입
             article.getTags().forEach(articleTag ->
-                    tagList.add(articleTag.getTag().getTagName()));
+                    tagList.add(TagResponseDto.builder()
+                            .tagName(articleTag.getTag().getTagName())
+                            .colorCode(articleTag.getTag().getColorCode())
+                            .build()));
             ArticlePreviewDto.AllArticlePreview allArticlePreviewDto
                     = ArticlePreviewDto.AllArticlePreview.builder()
                     .articleId(article.getId())
