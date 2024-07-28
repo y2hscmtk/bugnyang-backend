@@ -1,7 +1,9 @@
 package com.winner_cat.domain.scrap.service;
 
+import com.winner_cat.domain.article.dto.TagResponseDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
+import com.winner_cat.domain.article.entity.Tag;
 import com.winner_cat.domain.article.repository.ArticleRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
@@ -65,14 +67,18 @@ public class ScrapService {
         List<ScrapPreviewResponseDTO> responseDTOList = new ArrayList<>();
         for (Article article : scrappedArticle) {
             List<ArticleTag> articleTags = article.getTags();
-            List<String> tags = new ArrayList<>();
+            List<TagResponseDto> tagsList = new ArrayList<>();
             for (ArticleTag articleTag : articleTags) {
-                tags.add(articleTag.getTag().getTagName());
+                Tag tag = articleTag.getTag();
+                tagsList.add(TagResponseDto.builder()
+                                .tagName(tag.getTagName())
+                                .colorCode(tag.getColorCode())
+                                .build());
             }
             ScrapPreviewResponseDTO result = ScrapPreviewResponseDTO.builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
-                    .tags(tags)
+                    .tags(tagsList)
                     .build();
             responseDTOList.add(result);
         }

@@ -1,5 +1,6 @@
 package com.winner_cat.domain.scrap.dto;
 
+import com.winner_cat.domain.article.dto.TagResponseDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,5 +14,5 @@ import java.util.List;
 public class ScrapPreviewResponseDTO {
     private Long articleId;
     private String title;
-    private List<String> tags;
+    private List<TagResponseDto> tags;
 }
