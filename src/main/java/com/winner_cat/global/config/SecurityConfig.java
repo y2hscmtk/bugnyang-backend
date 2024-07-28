@@ -34,6 +34,11 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler; // oauth2 success handler
+    private static final String[] PERMIT_ALL_PATHS = { // JWT 검사X
+            "/login", "/join", "/oauth2/**", "/ci",
+            "/api/article/today-error","/api/scream/**","api/article/all",
+            "api/article/detail/**","api/article/tag/**"
+    };
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -91,7 +96,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
-                        .requestMatchers("/login", "/join", "/oauth2/**","/ci").permitAll()
+                        .requestMatchers(PERMIT_ALL_PATHS).permitAll()
                         .requestMatchers("/test").hasAnyRole("ADMIN","USER")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
