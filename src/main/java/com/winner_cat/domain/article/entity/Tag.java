@@ -17,4 +17,5 @@ public class Tag {
     @Column(name = "tag_id")
     private Long id;
     private String tagName;
+    private String colorCode; // 색상 코드
 }

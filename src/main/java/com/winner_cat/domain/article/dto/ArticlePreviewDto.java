@@ -15,7 +15,7 @@ public class ArticlePreviewDto {
         private Long articleId;
         private String title;
         @Builder.Default
-        private List<String> tagList = new ArrayList<>();
+        private List<TagResponseDto> tagList = new ArrayList<>();
     }
 
     @Data

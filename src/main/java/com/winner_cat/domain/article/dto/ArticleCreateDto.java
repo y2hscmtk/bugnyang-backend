@@ -1,8 +1,5 @@
 package com.winner_cat.domain.article.dto;
 
-import com.winner_cat.domain.article.entity.Article;
-import com.winner_cat.domain.article.entity.ArticleTag;
-import com.winner_cat.domain.article.entity.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

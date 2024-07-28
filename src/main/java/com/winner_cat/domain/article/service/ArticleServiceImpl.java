@@ -1,9 +1,6 @@
 package com.winner_cat.domain.article.service;
 
-import com.winner_cat.domain.article.dto.ArticlePreviewDto;
-import com.winner_cat.domain.article.dto.ArticleCreateDto;
-import com.winner_cat.domain.article.dto.ArticleListDto;
-import com.winner_cat.domain.article.dto.ArticleUpdateDto;
+import com.winner_cat.domain.article.dto.*;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
 import com.winner_cat.domain.article.entity.Tag;
@@ -37,6 +34,9 @@ public class ArticleServiceImpl implements ArticleService{
     private final TagRepository tagRepository;
     private final ArticleTagRepository articleTagRepository;
 
+    /**
+     * 게시글 작성
+     */
     @Override
     public ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req, String email){
 
@@ -75,6 +75,11 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok(res);
     }
 
+
+    /**
+     * 게시글 수정
+     * - 게시글 작성자와 현재 로그인한 사용자가 같은 사용자인지 확인하는 작업 작성 필요
+     */
     @Override
     public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req) {
         // 게시물 검색
@@ -88,11 +93,12 @@ public class ArticleServiceImpl implements ArticleService{
         article.changeCause(req.getCause());
         article.changeSolution(req.getSolution());
 
-        // 새로운 태그 추가
+        // 연관관계 설정
         List<String> tagList = req.getTags();
         List<ArticleTag> articleTags = new ArrayList<>();
 
         for (String tagName : tagList) {
+            // 데이터베이스에 존재하는 태그인지 확인
             Tag tag = tagRepository.findByTagName(tagName)
                     .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
 
@@ -115,13 +121,17 @@ public class ArticleServiceImpl implements ArticleService{
 
     }
 
+    /**
+     * 게시글 삭제
+     * 내가 작성한 게시글만 삭제가 가능하다
+     */
     @Override
     public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId){
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
 
-        // 기존 태그 제거
+        // 연관관계 매핑 제거
         articleTagRepository.deleteByArticle(article);
 
         // 게시글 삭제
@@ -131,23 +141,31 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok(res);
     }
 
+    /**
+     * 게시글 상세 보기
+     */
     @Override
     public ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
 
-        List<String> articleTags = new ArrayList<>();
+        List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
         List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
 
         for (ArticleTag articleTag : articleTagsList) {
-            String tagName = articleTag.getTag().getTagName();
-            articleTags.add(tagName);
+            Tag tag = articleTag.getTag();
+            tagResponseDtoList.add(
+                    TagResponseDto.builder()
+                            .tagName(tag.getTagName())
+                            .colorCode(tag.getColorCode())
+                            .build()
+            );
         }
 
 
         ArticleListDto.ArticleResponse articleResponse = ArticleListDto.ArticleResponse.builder()
                 .title(article.getTitle())
-                .tags(articleTags)
+                .tags(tagResponseDtoList)
                 .cause(article.getCause())
                 .solution(article.getSolution())
                 .updatedAt(article.getUpdatedAt())
@@ -156,7 +174,9 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponse));
     }
 
-    // 내가 작성한 게시글 조회(미리보기)
+    /**
+     * 내가 작성한 게시글 조회
+     */
     @Override
     public ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable) {
         // 작성자 정보 조회
@@ -172,18 +192,22 @@ public class ArticleServiceImpl implements ArticleService{
         for (Article article : articles) {
             // 각 게시물마다 태그 조회
             List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
-            List<String> articleTags = new ArrayList<>();
+            List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
 
             for (ArticleTag articleTag : articleTagsList) {
-                String tagName = articleTag.getTag().getTagName();
-                articleTags.add(tagName);
+                Tag tag = articleTag.getTag();
+                tagResponseDtoList.add(
+                        TagResponseDto.builder()
+                                .tagName(tag.getTagName())
+                                .colorCode(tag.getColorCode())
+                                .build());
             }
 
             // 게시글 응답 생성
             articleResponses.add(ArticleListDto.ArticleResponse.builder()
                     .id(article.getId())
                     .title(article.getTitle())
-                    .tags(articleTags)
+                    .tags(tagResponseDtoList)
                     .updatedAt(article.getUpdatedAt())
                     .build());
         }
@@ -198,10 +222,13 @@ public class ArticleServiceImpl implements ArticleService{
         // 2. 반환 DTO 생성 및 반환
         List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
-            List<String> tagList = new ArrayList<>();
+            List<TagResponseDto> tagList = new ArrayList<>();
             // 태그 목록들 얻어와서 반환 DTO에 삽입
             article.getTags().forEach(articleTag ->
-                    tagList.add(articleTag.getTag().getTagName()));
+                    tagList.add(TagResponseDto.builder()
+                            .tagName(articleTag.getTag().getTagName())
+                            .colorCode(articleTag.getTag().getColorCode())
+                            .build()));
             ArticlePreviewDto.AllArticlePreview allArticlePreviewDto
                     = ArticlePreviewDto.AllArticlePreview.builder()
                     .articleId(article.getId())
