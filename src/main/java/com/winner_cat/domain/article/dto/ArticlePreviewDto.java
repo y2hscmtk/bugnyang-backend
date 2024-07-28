@@ -36,8 +36,17 @@ public class ArticlePreviewDto {
     @Data
     @Builder
     public static class TagArticlePreviewResponse {
+        private int totalPages;
+        @Builder.Default
+        private List<TagArticlePreview> articlePreviewList = new ArrayList<>();
+    }
+
+    @Data
+    @Builder
+    public static class TagArticlePreview {
         private Long articleId;
         private String title;
+        private String cause; // 원인
     }
 
 }
