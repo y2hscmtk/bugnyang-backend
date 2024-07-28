@@ -185,9 +185,9 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 페이징된 게시글 조회
         Page<Article> articlePage = articleRepository.findByAuthor(author, pageable);
+        int totalPages = articlePage.getTotalPages();
         List<Article> articles = articlePage.getContent();
-        List<ArticleListDto.ArticleResponse> articleResponses = new ArrayList<>();
-
+        List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
 
         for (Article article : articles) {
             // 각 게시물마다 태그 조회
@@ -203,16 +203,18 @@ public class ArticleServiceImpl implements ArticleService{
                                 .build());
             }
 
-            // 게시글 응답 생성
-            articleResponses.add(ArticleListDto.ArticleResponse.builder()
-                    .id(article.getId())
+            articlePreviewList.add(ArticlePreviewDto.AllArticlePreview.builder()
+                    .articleId(article.getId())
                     .title(article.getTitle())
-                    .tags(tagResponseDtoList)
-                    .updatedAt(article.getUpdatedAt())
-                    .build());
+                    .tagList(tagResponseDtoList).build());
         }
+        // 최종 응답 생성
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .articlePreviewList(articlePreviewList)
+                .totalPages(totalPages)
+                .build();
 
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponses));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
     @Override
