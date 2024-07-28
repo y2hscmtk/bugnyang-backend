@@ -185,9 +185,9 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 페이징된 게시글 조회
         Page<Article> articlePage = articleRepository.findByAuthor(author, pageable);
+        int totalPages = articlePage.getTotalPages();
         List<Article> articles = articlePage.getContent();
-        List<ArticleListDto.ArticleResponse> articleResponses = new ArrayList<>();
-
+        List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
 
         for (Article article : articles) {
             // 각 게시물마다 태그 조회
@@ -203,22 +203,25 @@ public class ArticleServiceImpl implements ArticleService{
                                 .build());
             }
 
-            // 게시글 응답 생성
-            articleResponses.add(ArticleListDto.ArticleResponse.builder()
-                    .id(article.getId())
+            articlePreviewList.add(ArticlePreviewDto.AllArticlePreview.builder()
+                    .articleId(article.getId())
                     .title(article.getTitle())
-                    .tags(tagResponseDtoList)
-                    .updatedAt(article.getUpdatedAt())
-                    .build());
+                    .tagList(tagResponseDtoList).build());
         }
+        // 최종 응답 생성
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .articlePreviewList(articlePreviewList)
+                .totalPages(totalPages)
+                .build();
 
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponses));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
     @Override
     public ResponseEntity<?> getAllArticle(Pageable pageable) {
         // 1. pageable 객체를 바탕으로 전체 게시글 엔티티 조회
         Page<Article> articlePage = articleRepository.findAll(pageable);
+        int totalPages = articlePage.getTotalPages();
         // 2. 반환 DTO 생성 및 반환
         List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
@@ -229,37 +232,60 @@ public class ArticleServiceImpl implements ArticleService{
                             .tagName(articleTag.getTag().getTagName())
                             .colorCode(articleTag.getTag().getColorCode())
                             .build()));
-            ArticlePreviewDto.AllArticlePreview allArticlePreviewDto
+            ArticlePreviewDto.AllArticlePreview allArticlePreviewResponseDto
                     = ArticlePreviewDto.AllArticlePreview.builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
                     .tagList(tagList)
                     .build();
-            resultDtoList.add(allArticlePreviewDto);
+            resultDtoList.add(allArticlePreviewResponseDto);
         }
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(resultDtoList)
+                .build();
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
+    /**
+     * 태그로 게시글 조회 - 미리보기
+     */
     @Override
     public ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable) {
         // 1. 해당하는 태그가 실존하는지 확인한다.
-        Tag tag = tagRepository.findByTagName(tagName)
+        Tag tagEntity = tagRepository.findByTagName(tagName)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
         // 2. ArticleTag 레파지토리에서 연관관계 정보를 바탕으로 해당하는 게시글들을 페이지로 얻어온다.
         Page<ArticleTag> articleTagPage
-                = articleTagRepository.findArticleTagPageByTag(tag, pageable);
+                = articleTagRepository.findArticleTagPageByTag(tagEntity, pageable);
         List<ArticleTag> articleTagList = articleTagPage.getContent();
+        int totalPages = articleTagPage.getTotalPages();
         // 3. 반환 DTO 생성 후 반환
-        List<ArticlePreviewDto.TagArticlePreview> resultDtoList = new ArrayList<>();
+        List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (ArticleTag articleTag : articleTagList) {
             Article article = articleTag.getArticle();
-            ArticlePreviewDto.TagArticlePreview result = ArticlePreviewDto.TagArticlePreview
+            List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
+            // 관련 태그들 얻어오기
+            Tag tag = articleTag.getTag();
+            tagResponseDtoList.add(
+                    TagResponseDto.builder()
+                            .tagName(tag.getTagName())
+                            .colorCode(tag.getColorCode())
+                            .build()
+            );
+            ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
                     .builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
+                    .tagList(tagResponseDtoList)
                     .build();
             resultDtoList.add(result);
         }
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(resultDtoList));
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(resultDtoList)
+                .build();
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 }

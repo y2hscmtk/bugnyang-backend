@@ -7,7 +7,7 @@ import com.winner_cat.domain.article.entity.Tag;
 import com.winner_cat.domain.article.repository.ArticleRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
-import com.winner_cat.domain.scrap.dto.ScrapPreviewResponseDTO;
+import com.winner_cat.domain.scrap.dto.ScrapDto;
 import com.winner_cat.domain.scrap.entity.Scrap;
 import com.winner_cat.domain.scrap.repository.ScrapRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
@@ -60,11 +60,12 @@ public class ScrapService {
 
         // 2. 해당 회원이 스크랩한 게시글 배열 얻어오기
         Page<Scrap> byMember = scrapRepository.findByMember(member, pageable);
+        int totalPages = byMember.getTotalPages();
         List<Article> scrappedArticle = new ArrayList<>();
         // 얻어온 페이지에서 Scrap 객체 추출 -> 스크랩 객체에서 게시글 정보 추출하여 scrappedArticle에 저장
         byMember.getContent().forEach(scrap -> scrappedArticle.add(scrap.getArticle()));
         // 3. 반환 DTO 생성
-        List<ScrapPreviewResponseDTO> responseDTOList = new ArrayList<>();
+        List<ScrapDto.ScrapPreviewDto> responseDTOList = new ArrayList<>();
         for (Article article : scrappedArticle) {
             List<ArticleTag> articleTags = article.getTags();
             List<TagResponseDto> tagsList = new ArrayList<>();
@@ -75,14 +76,19 @@ public class ScrapService {
                                 .colorCode(tag.getColorCode())
                                 .build());
             }
-            ScrapPreviewResponseDTO result = ScrapPreviewResponseDTO.builder()
+            ScrapDto.ScrapPreviewDto result = ScrapDto.ScrapPreviewDto.builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
                     .tags(tagsList)
                     .build();
             responseDTOList.add(result);
         }
-        // 4. 반환
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(responseDTOList));
+        // 최종 반환 DTO 생성
+        ScrapDto.ScrapPreviewResponseDto result = ScrapDto.ScrapPreviewResponseDto.builder()
+                .totalPages(totalPages)
+                .scrapPreviewList(responseDTOList)
+                .build();
+
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 }
