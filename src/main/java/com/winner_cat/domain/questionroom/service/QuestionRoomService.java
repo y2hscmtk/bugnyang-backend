@@ -76,6 +76,7 @@ public class QuestionRoomService {
         ArrayList<AnswerDto> answerDtoArrayList = new ArrayList<>();
         for (Answer answer : answerList) {
             AnswerDto answerDto = AnswerDto.builder()
+                    .answerId(answer.getId())
                     .content(answer.getContent())
                     .createdAt(answer.getCreatedAt())
                     .build();
