@@ -15,7 +15,7 @@ public class ArticleListDto {
         private Long id;
         private String title; // 게시글 제목
         @Builder.Default
-        private List<String> tags = new ArrayList<>(); // 태그
+        private List<TagResponseDto> tags = new ArrayList<>(); // 태그
         private String cause; // 원인
         private String solution; // 해결 방법
         private LocalDateTime updatedAt;
