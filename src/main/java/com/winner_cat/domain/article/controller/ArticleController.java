@@ -67,11 +67,19 @@ public class ArticleController {
         return articleService.getAllArticle(pageable);
     }
 
-    // 태그로 게시글 조회
+    // 태그로 게시글 조회 - 미리보기
     @GetMapping("/tag")
     public ResponseEntity<?> getArticleByTag(
             @RequestParam String tagName,
             Pageable pageable) {
         return articleService.getArticleByTag(tagName, pageable);
+    }
+
+    // 태그로 게시글 추천 - 미리보기
+    @GetMapping("/recommend")
+    public ResponseEntity<?> getArticleRecommendByTag(
+            @RequestParam String tagName,
+            Pageable pageable) {
+        return articleService.getArticleRecommendByTag(tagName, pageable);
     }
 }
