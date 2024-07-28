@@ -34,6 +34,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler; // oauth2 success handler
+    private final String[] permitAllPaths;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -79,7 +80,7 @@ public class SecurityConfig {
 
         // JWT 검증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
         http
-                .addFilterBefore(new JWTFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(customUserDetailsService, jwtUtil, permitAllPaths), UsernamePasswordAuthenticationFilter.class);
 
         // 시큐리티 예외처리 필터
         http
@@ -90,9 +91,9 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http
                 .authorizeHttpRequests(auth -> auth
-                        // login, root, join 경로의 요청에 대해서는 모두 허용
-                        .requestMatchers("/login", "/join", "/oauth2/**","/ci").permitAll()
-                        .requestMatchers("/test").hasAnyRole("ADMIN","USER")
+                        // permitAllPaths 경로의 요청에 대해서는 모두 허용
+                        .requestMatchers(permitAllPaths).permitAll()
+                        .requestMatchers("/test").hasAnyRole("ADMIN", "USER")
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
                 );
