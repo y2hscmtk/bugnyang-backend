@@ -47,8 +47,10 @@ public class ArticleController {
     // 게시글 상세 조회
     @GetMapping("/detail/{articleId}")
     public ResponseEntity<ApiResponse<?>> getArticleDetail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("articleId") Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail("email",articleId);
+        String email = userDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(email,articleId);
         return result;
     }
 
