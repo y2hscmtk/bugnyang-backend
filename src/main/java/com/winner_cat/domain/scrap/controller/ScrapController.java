@@ -32,6 +32,17 @@ public class ScrapController {
     @GetMapping("/mine")
     public ResponseEntity<?> getAllMyScrapArticles(
             @AuthenticationPrincipal CustomUserDetails userDetails, Pageable pageable) {
-        return scrapService.getAllMyScrapArticles(userDetails.getEmail(),pageable);
+        return scrapService.getAllMyScrapArticles(userDetails.getEmail(), pageable);
+    }
+
+    /**
+     * 스크랩 취소
+     */
+    @DeleteMapping("/cancel/{articleId}")
+    public ResponseEntity<?> cancelScrap(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable(name = "articleId") Long articleId) {
+        String email = userDetails.getEmail();
+        return scrapService.cancelScrap(email, articleId);
     }
 }
