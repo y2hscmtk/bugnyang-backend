@@ -176,7 +176,7 @@ public class ArticleServiceImpl implements ArticleService{
                 .cause(article.getCause())
                 .solution(article.getSolution())
                 .updatedAt(article.getUpdatedAt())
-                .isSrapped(isScrapped)
+                .isScrapped(isScrapped)
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponse));

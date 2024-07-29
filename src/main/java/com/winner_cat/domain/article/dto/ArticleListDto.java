@@ -19,7 +19,7 @@ public class ArticleListDto {
         private String cause; // 원인
         private String solution; // 해결 방법
         private LocalDateTime updatedAt;
-        private Boolean isSrapped; // 게시글 스크랩 유무
+        private Boolean isScrapped; // 게시글 스크랩 유무
     }
 
     // 게시글 조회
