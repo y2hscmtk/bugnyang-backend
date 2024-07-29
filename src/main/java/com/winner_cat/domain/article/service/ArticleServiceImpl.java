@@ -210,6 +210,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
         // 최종 응답 생성
         ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .email(author.getEmail())
                 .articlePreviewList(articlePreviewList)
                 .totalPages(totalPages)
                 .build();
