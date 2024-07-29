@@ -10,8 +10,8 @@ public class PermitAllPathsConfig {
     public String[] permitAllPaths() {
         return new String[]{
                 "/login", "/join", "/oauth2/**", "/ci",
-                "/api/article/today-error", "/api/scream/**", "/api/article/all",
-                "/api/article/detail/**", "/api/article/tag/**"
+                "/api/article/today-error", "/api/scream/**",
+                "/api/article/all", "/api/article/tag/**"
         };
     }
 }

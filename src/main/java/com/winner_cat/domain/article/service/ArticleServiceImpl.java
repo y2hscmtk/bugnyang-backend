@@ -9,6 +9,8 @@ import com.winner_cat.domain.article.repository.ArticleTagRepository;
 import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
+import com.winner_cat.domain.scrap.entity.Scrap;
+import com.winner_cat.domain.scrap.repository.ScrapRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
 import com.winner_cat.global.response.ApiResponse;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -33,6 +36,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleRepository articleRepository;
     private final TagRepository tagRepository;
     private final ArticleTagRepository articleTagRepository;
+    private final ScrapRepository scrapRepository;
 
     /**
      * 게시글 작성
@@ -144,13 +148,17 @@ public class ArticleServiceImpl implements ArticleService{
      * 게시글 상세 보기
      */
     @Override
-    public ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId) {
+    public ResponseEntity<ApiResponse<?>> getArticleDetail(String email,Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+        // 현재 로그인 중인 사용자
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
         List<ArticleTag> articleTagsList = articleTagRepository.findByArticle(article);
 
+        // 태그 정보 추출
         for (ArticleTag articleTag : articleTagsList) {
             Tag tag = articleTag.getTag();
             tagResponseDtoList.add(
@@ -160,14 +168,15 @@ public class ArticleServiceImpl implements ArticleService{
                             .build()
             );
         }
-
-
+        // 스크랩 유무
+        boolean isScrapped = scrapRepository.existsByMemberAndArticle(member, article);
         ArticleListDto.ArticleResponse articleResponse = ArticleListDto.ArticleResponse.builder()
                 .title(article.getTitle())
                 .tags(tagResponseDtoList)
                 .cause(article.getCause())
                 .solution(article.getSolution())
                 .updatedAt(article.getUpdatedAt())
+                .isSrapped(isScrapped)
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(articleResponse));
