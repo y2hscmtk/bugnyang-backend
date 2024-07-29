@@ -91,4 +91,22 @@ public class ScrapService {
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
+
+    /**
+     * 스크랩 취소
+     */
+    public ResponseEntity<?> cancelScrap(String email, Long articleId) {
+        // 1. 회원 정보 조회
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        // 2. 게시글 정보 조회
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+        // 3. 스크랩 정보 조회
+        Scrap scrapInfo = scrapRepository.findScrapInfoByMemberAndArticle(member, article)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SCRAPINFO_NOT_FOUND));
+        // 4. 스크랩 정보 삭제
+        scrapRepository.delete(scrapInfo);
+        return ResponseEntity.ok(ApiResponse.onSuccess("스크랩이 취소되었습니다."));
+    }
 }
