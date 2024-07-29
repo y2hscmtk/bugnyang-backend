@@ -69,7 +69,6 @@ public class ArticleServiceImpl implements ArticleService{
 
         savedArticle.changeTags(new ArrayList<>(articleTags));
 
-        // 생성된 게시글의 정보를 포함한 응답 반환
         ArticleCreateDto.CreateArticle createArticleResponse = new ArticleCreateDto.CreateArticle(savedArticle.getId(), savedArticle.getUpdatedAt());
         ApiResponse<ArticleCreateDto.CreateArticle> res = ApiResponse.onSuccess(createArticleResponse);
         return ResponseEntity.ok(res);
