@@ -12,7 +12,7 @@ public interface ArticleService {
     ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req,String email);
     ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req);
     ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId);
-    ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId );
+    ResponseEntity<ApiResponse<?>> getArticleDetail(String email, Long articleId);
     ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable);
     ResponseEntity<?> getAllArticle(Pageable pageable);
     ResponseEntity<?> getArticleByTag(String tagName, Pageable pageable);

@@ -48,7 +48,7 @@ public class ArticleController {
     @GetMapping("/detail/{articleId}")
     public ResponseEntity<ApiResponse<?>> getArticleDetail(
             @PathVariable("articleId") Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(articleId);
+        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail("email",articleId);
         return result;
     }
 
