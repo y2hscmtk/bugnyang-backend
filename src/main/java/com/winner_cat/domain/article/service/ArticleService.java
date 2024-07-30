@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public interface ArticleService {
     ResponseEntity<ApiResponse<?>> createArticle(ArticleCreateDto.Req req,String email);
     ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req, String email);
-    ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId);
+    ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId, String email);
     ResponseEntity<ApiResponse<?>> getArticleDetail(Long articleId );
     ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable);
     ResponseEntity<?> getAllArticle(Pageable pageable);

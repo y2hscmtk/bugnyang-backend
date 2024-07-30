@@ -81,10 +81,6 @@ public class ArticleServiceImpl implements ArticleService{
      */
     @Override
     public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req, String email) {
-        // 작성자 정보 조회
-        Member author = memberRepository.findMemberByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
@@ -134,10 +130,15 @@ public class ArticleServiceImpl implements ArticleService{
      * 내가 작성한 게시글만 삭제가 가능하다
      */
     @Override
-    public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId){
+    public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId, String email){
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 게시글 작성자와 요청자의 이메일 비교
+        if (!article.getAuthor().getEmail().equals(email)) {
+            throw new GeneralException(ErrorStatus.ARTICLE_MEMBER_NOT_FOUND);
+        }
 
         // 연관관계 매핑 제거
         articleTagRepository.deleteByArticle(article);

@@ -40,8 +40,9 @@ public class ArticleController {
     // 게시글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> deleteArticle(
-            @PathVariable Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId);
+            @PathVariable Long articleId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId, email);
         return result;
     }
 
