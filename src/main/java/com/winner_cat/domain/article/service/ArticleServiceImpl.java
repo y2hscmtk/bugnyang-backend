@@ -180,7 +180,7 @@ public class ArticleServiceImpl implements ArticleService{
         // 스크랩 유무
         boolean isScrapped = scrapRepository.existsByMemberAndArticle(member, article);
         ArticleListDto.ArticleResponse articleResponse = ArticleListDto.ArticleResponse.builder()
-                .email(email)
+                .email(article.getAuthor().getEmail()) // 게시글 작성자의 이메일
                 .title(article.getTitle())
                 .tags(tagResponseDtoList)
                 .cause(article.getCause())
