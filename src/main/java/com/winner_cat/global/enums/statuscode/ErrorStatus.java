@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseCode {
 
 	// Article
 	ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "삭제되었거나 존재하지 않는 게시글입니다."),
+	ARTICLE_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4002", "게시글 작성자만 접근 권한이 있습니다."),
 
 	// Tag
 	TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "해당하는 태그가 없습니다"),

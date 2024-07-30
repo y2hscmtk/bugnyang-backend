@@ -80,10 +80,19 @@ public class ArticleServiceImpl implements ArticleService{
      * - 게시글 작성자와 현재 로그인한 사용자가 같은 사용자인지 확인하는 작업 작성 필요
      */
     @Override
-    public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req) {
+    public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req, String email) {
+        // 작성자 정보 조회
+        Member author = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 게시글 작성자와 로그인한 사용자의 이메일 비교
+        if (!article.getAuthor().getEmail().equals(email)) {
+            throw new GeneralException(ErrorStatus.ARTICLE_MEMBER_NOT_FOUND);
+        }
 
         // 게시물 업데이트
         articleTagRepository.deleteByArticle(article); // 기존 게시글 삭제
