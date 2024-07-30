@@ -9,7 +9,6 @@ import com.winner_cat.domain.article.repository.ArticleTagRepository;
 import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
-import com.winner_cat.domain.scrap.entity.Scrap;
 import com.winner_cat.domain.scrap.repository.ScrapRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
@@ -84,10 +83,15 @@ public class ArticleServiceImpl implements ArticleService{
      * - 게시글 작성자와 현재 로그인한 사용자가 같은 사용자인지 확인하는 작업 작성 필요
      */
     @Override
-    public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req) {
+    public ResponseEntity<ApiResponse<?>> modifyArticle(Long articleId, ArticleUpdateDto.Req req, String email) {
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 게시글 작성자와 로그인한 사용자의 이메일 비교
+        if (!article.getAuthor().getEmail().equals(email)) {
+            throw new GeneralException(ErrorStatus.ARTICLE_MEMBER_NOT_FOUND);
+        }
 
         // 게시물 업데이트
         articleTagRepository.deleteByArticle(article); // 기존 게시글 삭제
@@ -129,10 +133,15 @@ public class ArticleServiceImpl implements ArticleService{
      * 내가 작성한 게시글만 삭제가 가능하다
      */
     @Override
-    public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId){
+    public ResponseEntity<ApiResponse<?>> deleteArticle(Long articleId, String email){
         // 게시물 검색
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.ARTICLE_NOT_FOUND));
+
+        // 게시글 작성자와 요청자의 이메일 비교
+        if (!article.getAuthor().getEmail().equals(email)) {
+            throw new GeneralException(ErrorStatus.ARTICLE_MEMBER_NOT_FOUND);
+        }
 
         // 연관관계 매핑 제거
         articleTagRepository.deleteByArticle(article);
@@ -327,4 +336,6 @@ public class ArticleServiceImpl implements ArticleService{
                 .build();
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
+
+
 }

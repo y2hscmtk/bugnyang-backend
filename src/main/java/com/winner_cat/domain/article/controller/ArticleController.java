@@ -30,17 +30,19 @@ public class ArticleController {
     // 게시글 수정
     @PatchMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> modifyArticle(
-            @PathVariable Long articleId,
-            @RequestBody ArticleUpdateDto.Req req) {
-        ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
+            @PathVariable Long articleId, @RequestBody ArticleUpdateDto.Req req,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req, email);
         return result;
     }
 
     // 게시글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> deleteArticle(
-            @PathVariable Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId);
+            @PathVariable Long articleId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId, email);
         return result;
     }
 
