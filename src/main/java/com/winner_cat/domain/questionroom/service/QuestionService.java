@@ -197,7 +197,7 @@ public class QuestionService {
         return messages;
     }
 
-    private String callGptApi(ChatCompletionDto chatCompletionDto) {
+    public String callGptApi(ChatCompletionDto chatCompletionDto) {
         try {
             HttpClient client = HttpClient.newHttpClient();
 

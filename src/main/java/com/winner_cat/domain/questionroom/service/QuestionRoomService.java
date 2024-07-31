@@ -4,10 +4,7 @@ import com.winner_cat.domain.article.dto.ArticleListDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
-import com.winner_cat.domain.questionroom.dto.AnswerDto;
-import com.winner_cat.domain.questionroom.dto.CheckChattingRoomDetailDto;
-import com.winner_cat.domain.questionroom.dto.QuestionDto;
-import com.winner_cat.domain.questionroom.dto.QuestionRoomListDto;
+import com.winner_cat.domain.questionroom.dto.*;
 import com.winner_cat.domain.questionroom.entity.Answer;
 import com.winner_cat.domain.questionroom.entity.Question;
 import com.winner_cat.domain.questionroom.entity.QuestionRoom;
@@ -17,6 +14,8 @@ import com.winner_cat.domain.questionroom.repository.QuestionRepository;
 import com.winner_cat.domain.questionroom.repository.QuestionRoomRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
+import com.winner_cat.global.gpt.dto.ChatCompletionDto;
+import com.winner_cat.global.gpt.dto.ChatRequestMsgDto;
 import com.winner_cat.global.jwt.dto.CustomUserDetails;
 import com.winner_cat.global.response.ApiResponse;
 import lombok.Builder;
@@ -38,6 +37,7 @@ public class QuestionRoomService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final MemberRepository memberRepository;
+    private final QuestionService questionService;
 
     /**
      * 질문 방 상태 수정
@@ -113,5 +113,46 @@ public class QuestionRoomService {
         }
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(questionRoomResponses));
+    }
+
+    /**
+     * 답변 채택하기
+     * 1. 채택한 답변 3줄로 요약하여 반환
+     * 2. 질문방의 상태 DONE으로 변경
+     */
+    public ResponseEntity<?> adoptAnswer(AdoptAnswerDto requestDto) {
+        Long questionRoomId = requestDto.getQuestionRoomId();
+
+        QuestionRoom questionRoom = questionRoomRepository.findById(questionRoomId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_ROOM_NOT_FOUND));
+
+        Long answerId = requestDto.getAnswerId();
+
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ANSWER_NOT_FOUND));
+
+        String answerContent = answer.getContent();
+
+        // 1. 답변 요약
+
+        List<ChatRequestMsgDto> messages = new ArrayList<>();
+        String prompt = "아래 내용을 3줄 이하로 짧게 요약 하세요.";
+        messages.add(new ChatRequestMsgDto("요청 : ", prompt));
+        messages.add(new ChatRequestMsgDto("내용 : ", answerContent));
+
+        ChatCompletionDto chatCompletionDto = ChatCompletionDto.builder()
+                .model("gpt-4o")
+                .messages(messages)
+                .build();
+
+        System.out.println("===== 요청 본문 =====");
+        messages.forEach(msg -> System.out.println(msg.getRole() + ": " + msg.getContent()));
+        System.out.println("====================");
+
+        String result = questionService.callGptApi(chatCompletionDto);
+
+        // 2. 질문방 상태 완료로 변경
+        questionRoom.changeState(QuestionState.DONE);
+        return ResponseEntity.ok(ApiResponse.onSuccess(result));
     }
 }
