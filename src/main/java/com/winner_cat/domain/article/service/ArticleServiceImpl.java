@@ -143,6 +143,9 @@ public class ArticleServiceImpl implements ArticleService{
             throw new GeneralException(ErrorStatus.ARTICLE_MEMBER_NOT_FOUND);
         }
 
+        // 스크랩 정보 삭제
+        scrapRepository.deleteByArticle(article);
+
         // 연관관계 매핑 제거
         articleTagRepository.deleteByArticle(article);
 
