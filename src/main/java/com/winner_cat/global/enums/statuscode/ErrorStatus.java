@@ -43,7 +43,10 @@ public enum ErrorStatus implements BaseCode {
 	QUESTION_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTIONROOM4001", "존재하지 않는 질문방 입니다."),
 	FAIL_TO_CREATE_ANSWER(HttpStatus.NOT_FOUND, "QUESTIONROOM4002", "답변을 생성하는데 실패하였습니다. GPT API키가 만료되었을 수 있습니다."),
 	// Scrap
-	SCRAPINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 정보가 없습니다. 아직 스크랩하지 않은 게시글입니다.");
+	SCRAPINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 정보가 없습니다. 아직 스크랩하지 않은 게시글입니다."),
+
+	// Answer
+	ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER4001", "해당하는 답변이 존재하지 않습니다. 질문 아이디를 다시 한번 확인해주세요");
 
 	private final HttpStatus httpStatus;
 	private final String code;
