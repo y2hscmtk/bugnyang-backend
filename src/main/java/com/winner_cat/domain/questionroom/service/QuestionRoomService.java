@@ -136,18 +136,18 @@ public class QuestionRoomService {
         // 1. 답변 요약
 
         List<ChatRequestMsgDto> messages = new ArrayList<>();
-        String prompt = "아래 내용을 3줄 이하로 짧게 요약 하세요.";
-        messages.add(new ChatRequestMsgDto("요청 : ", prompt));
-        messages.add(new ChatRequestMsgDto("내용 : ", answerContent));
+        String prompt = "문제 해결 방법에 대한 글을 작성하고 싶습니다. 어떻게 오류를 해결했는지 아래 내용을 3줄 이하로 짧게 요약하세요.";
+        messages.add(new ChatRequestMsgDto("system", prompt));
+        messages.add(new ChatRequestMsgDto("user", answerContent));
 
         ChatCompletionDto chatCompletionDto = ChatCompletionDto.builder()
                 .model("gpt-4o")
                 .messages(messages)
                 .build();
 
-        System.out.println("===== 요청 본문 =====");
-        messages.forEach(msg -> System.out.println(msg.getRole() + ": " + msg.getContent()));
-        System.out.println("====================");
+//        System.out.println("===== 요청 본문 =====");
+//        messages.forEach(msg -> System.out.println(msg.getRole() + ": " + msg.getContent()));
+//        System.out.println("====================");
 
         String result = questionService.callGptApi(chatCompletionDto);
 

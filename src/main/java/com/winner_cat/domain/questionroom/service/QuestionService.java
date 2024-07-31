@@ -123,9 +123,9 @@ public class QuestionService {
                 .build();
 
         String gptAnswer = callGptApi(chatCompletionDto);
-        System.out.println("===============");
-        System.out.println("gptAnswer = " + gptAnswer);
-        System.out.println("===============");
+//        System.out.println("===============");
+//        System.out.println("gptAnswer = " + gptAnswer);
+//        System.out.println("===============");
         // 제목과 답변으로 내용 분리
         // 정규표현식 패턴 정의
         String regex = "\\[(.*?)\\]\\s*(.*)";
@@ -145,10 +145,10 @@ public class QuestionService {
         // 분리 후 질문방에 제목 지정
         savedQuestionRoom.changeName(title);
 
-        System.out.println("==============");
-        System.out.println("title = " + title);
-        System.out.println("content = " + content);
-        System.out.println("==============");
+//        System.out.println("==============");
+//        System.out.println("title = " + title);
+//        System.out.println("content = " + content);
+//        System.out.println("==============");
 
         // 3. 새로운 사용자 질문 저장, 질문에 대한 답변 저장
         Question questionEntity = Question.builder()
@@ -215,8 +215,8 @@ public class QuestionService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // 응답 형태 확인
-//            System.out.println("GPT 응답 상태 코드: " + response.statusCode());
-//            System.out.println("GPT 응답 본문: " + response.body());
+            System.out.println("GPT 응답 상태 코드: " + response.statusCode());
+            System.out.println("GPT 응답 본문: " + response.body());
 
             if (response.statusCode() == 200) {
                 JsonNode jsonNode = objectMapper.readTree(response.body());
