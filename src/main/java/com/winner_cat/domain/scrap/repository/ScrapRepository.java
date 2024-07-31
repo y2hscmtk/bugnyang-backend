@@ -15,4 +15,5 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     // 회원이 게시글을 스크랩했는지 유무
     boolean existsByMemberAndArticle(Member member, Article article);
     Optional<Scrap> findScrapInfoByMemberAndArticle(Member member, Article article);
+    void deleteByArticle(Article article);
 }
