@@ -8,19 +8,10 @@ import com.winner_cat.domain.article.repository.ArticleTagRepository;
 import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
-import com.winner_cat.domain.questionroom.entity.Answer;
-import com.winner_cat.domain.questionroom.entity.Question;
-import com.winner_cat.domain.questionroom.entity.QuestionRoom;
-import com.winner_cat.domain.questionroom.entity.enums.QuestionState;
-import com.winner_cat.domain.questionroom.repository.AnswerRepository;
-import com.winner_cat.domain.questionroom.repository.QuestionRepository;
-import com.winner_cat.domain.questionroom.repository.QuestionRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 //@Component
 @RequiredArgsConstructor
@@ -35,12 +26,17 @@ public class ArticleDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 회원 생성
-        Member member1 = createMember("username1","testuser@example.com","1234", "USER1", "ROLE_ADMIN" );
-        Member member2 = createMember("username2","testuser2@example.com","1234", "USER2", "ROLE_USER");
+//        Member member1 = createMember("username1","testuser@example.com","1234", "USER1", "ROLE_ADMIN" );
+//        Member member2 = createMember("username2","testuser2@example.com","1234", "USER2", "ROLE_USER");
+
+        Member member1 = memberRepository.findByUsername("username1");
+        Member member2 = memberRepository.findByUsername("username2");
 
         // 태그 생성
-        Tag tagJava = createTag("java","#FF3F3F");
-        Tag tagSwift = createTag("swift","#6630ff");
+        Tag tagJava = tagRepository.findByTagName("Java").get();
+        Tag tagSwift = tagRepository.findByTagName("Swift").get();
+        Tag tagiOS = tagRepository.findByTagName("iOS").get();
+        Tag tagPython = tagRepository.findByTagName("Python").get();
 
         // 게시글 생성
         Article member1Article1
@@ -51,17 +47,37 @@ public class ArticleDataLoader implements CommandLineRunner {
                 = createArticle("제목2", "원인2", "해결법2", member2);
         Article member2Article2
                 = createArticle("제목22", "원인22", "해결법22", member2);
+        Article member2Article3
+                = createArticle("제목3", "원인3", "해결법3", member2);
+        Article member2Article4
+                = createArticle("제목33", "원인33", "해결법33", member2);
+        Article member2Article5
+                = createArticle("제목4", "원인4", "해결법4", member2);
+        Article member2Article6
+                = createArticle("제목44", "원인44", "해결법44", member2);
 
         // 게시글 - 태그 연관관계 설정
-        setTagToArticle(member1Article1,tagJava);
+        setTagToArticle(member1Article1,tagiOS);
         setTagToArticle(member1Article1,tagSwift);
 
         setTagToArticle(member1Article2,tagJava);
 
-        setTagToArticle(member2Article1,tagJava);
+        setTagToArticle(member2Article1,tagiOS);
         setTagToArticle(member2Article1,tagSwift);
 
         setTagToArticle(member2Article2,tagSwift);
+
+        setTagToArticle(member2Article3,tagiOS);
+        setTagToArticle(member2Article3,tagSwift);
+
+        setTagToArticle(member2Article4,tagPython);
+
+        setTagToArticle(member2Article5,tagPython);
+        setTagToArticle(member2Article5,tagSwift);
+        setTagToArticle(member2Article5,tagiOS);
+
+        setTagToArticle(member2Article6,tagPython);
+
     }
 
     public Member createMember(String username, String email, String password, String nickname, String role) {
