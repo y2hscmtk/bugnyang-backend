@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 //@Component
-//@Order(2)
+//@Order(3)
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
