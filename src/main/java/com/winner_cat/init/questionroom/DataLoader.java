@@ -1,5 +1,7 @@
 package com.winner_cat.init.questionroom;
 
+import com.winner_cat.domain.member.entity.Member;
+import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.domain.questionroom.entity.Answer;
 import com.winner_cat.domain.questionroom.entity.Question;
 import com.winner_cat.domain.questionroom.entity.QuestionRoom;
@@ -9,26 +11,37 @@ import com.winner_cat.domain.questionroom.repository.QuestionRepository;
 import com.winner_cat.domain.questionroom.repository.QuestionRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 //@Component
+//@Order(3)
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
     private final QuestionRoomRepository questionRoomRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        Member username1 = memberRepository.findByUsername("username1");
+        Member username2 = memberRepository.findByUsername("username2");
         // 질문방 생성
         QuestionRoom room1 = questionRoomRepository.save(
-                QuestionRoom.builder().state(QuestionState.PROGRESS).build()
+                QuestionRoom.builder()
+                        .state(QuestionState.PROGRESS)
+                        .member(username1)
+                        .build()
         );
         QuestionRoom room2 = questionRoomRepository.save(
-                QuestionRoom.builder().state(QuestionState.PROGRESS).build()
+                QuestionRoom.builder()
+                        .state(QuestionState.PROGRESS)
+                        .member(username2)
+                        .build()
         );
 
         // 질문과 답변 생성 (room1)

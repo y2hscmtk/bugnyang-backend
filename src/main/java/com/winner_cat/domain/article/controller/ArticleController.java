@@ -86,4 +86,12 @@ public class ArticleController {
             Pageable pageable) {
         return articleService.getArticleRecommendByTag(tagName, pageable);
     }
+
+    /**
+     * 오늘 모인 에러 개수 보여주기
+     */
+    @GetMapping("/today-error")
+    public ResponseEntity<?> getTodayFixErrorInfo() {
+        return articleService.getTodayFixErrorInfo();
+    }
 }
