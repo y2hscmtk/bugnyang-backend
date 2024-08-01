@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -285,15 +286,14 @@ public class ArticleServiceImpl implements ArticleService{
         List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
         for (ArticleTag articleTag : articleTagList) {
             Article article = articleTag.getArticle();
-            List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
             // 관련 태그들 얻어오기
-            Tag tag = articleTag.getTag();
-            tagResponseDtoList.add(
-                    TagResponseDto.builder()
-                            .tagName(tag.getTagName())
-                            .colorCode(tag.getColorCode())
-                            .build()
-            );
+            List<TagResponseDto> tagResponseDtoList = article.getTags().stream()
+                    .map(at -> TagResponseDto.builder()
+                            .tagName(at.getTag().getTagName())
+                            .colorCode(at.getTag().getColorCode())
+                            .build())
+                    .collect(Collectors.toList());
+
             ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
                     .builder()
                     .articleId(article.getId())
