@@ -9,7 +9,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://bugnyang2.netlify.app/","http://localhost:3000","https://localhost:3000")
+                .allowedOriginPatterns("*") // 임시로 모두 허용
+//                .allowedOrigins("https://bugnyang2.netlify.app/","http://localhost:3000","https://localhost:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
