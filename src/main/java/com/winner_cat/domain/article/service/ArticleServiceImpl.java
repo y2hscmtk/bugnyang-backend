@@ -13,17 +13,16 @@ import com.winner_cat.domain.scrap.repository.ScrapRepository;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
 import com.winner_cat.global.response.ApiResponse;
-import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 @Service
@@ -341,5 +340,32 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
+    /**
+     * 오늘 해결한 총 에러와, 상위 태그 5개 반환
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getTodayFixErrorInfo() {
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime = endTime.toLocalDate().atStartOfDay();
+        List<Article> todayArticles = articleRepository.findAllByCreatedAtBetween(startTime, endTime);
+        long totalCount = todayArticles.size();
+        
+        // 가장 많이 작성된 태그 순으로 정렬
+        List<Object[]> topTags = articleTagRepository.findTopTagsByArticles(todayArticles);
+        // 반환 DTO 생성
+        List<TodayErrorDto.ErrorDto> top5Articles = new ArrayList<>();
+        topTags.stream().limit(5).forEach(tag -> {
+            top5Articles.add(TodayErrorDto.ErrorDto.builder()
+                    .tagName((String) tag[0])
+                    .count(((Number) tag[1]).longValue())
+                    .build());
+        });
+        TodayErrorDto.ErrorCount result = TodayErrorDto.ErrorCount.builder()
+                .totalCount(totalCount)
+                .top5Articles(top5Articles)
+                .build();
 
+        return ResponseEntity.ok(ApiResponse.onSuccess(result));
+    }
 }
