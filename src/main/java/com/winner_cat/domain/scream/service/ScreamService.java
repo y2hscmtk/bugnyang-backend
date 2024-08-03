@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 
 public interface ScreamService {
     ResponseEntity<ApiResponse<?>> createScream(ScreamCreateDto.Req req);
-    ResponseEntity<ApiResponse<?>> getAllScreams(LocalDateTime updatedAt);
+    ResponseEntity<ApiResponse<?>> getAllScreams(Long minutesAgo);
 }

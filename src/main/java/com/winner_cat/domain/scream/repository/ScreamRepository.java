@@ -11,9 +11,11 @@ import java.util.List;
 
 @Repository
 public interface ScreamRepository extends JpaRepository<Scream, Long> {
-    @Query("SELECT s FROM Scream s WHERE s.updatedAt BETWEEN :startOfDay AND :endOfDay")
+    @Query("SELECT s FROM Scream s WHERE s.updatedAt BETWEEN :startOfDay AND :endOfDay ORDER BY s.updatedAt DESC")
     List<Scream> findAllByUpdatedAtBetween(
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
     );
 }
+
+
