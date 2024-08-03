@@ -341,7 +341,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     /**
-     * 오늘 해결한 총 에러와, 상위 태그 5개 반환
+     * 오늘 해결한 총 에러와, 상위 태그 4개 반환
      */
     @Override
     @Transactional(readOnly = true)
@@ -354,16 +354,16 @@ public class ArticleServiceImpl implements ArticleService{
         // 가장 많이 작성된 태그 순으로 정렬
         List<Object[]> topTags = articleTagRepository.findTopTagsByArticles(todayArticles);
         // 반환 DTO 생성
-        List<TodayErrorDto.ErrorDto> top5Articles = new ArrayList<>();
-        topTags.stream().limit(5).forEach(tag -> {
-            top5Articles.add(TodayErrorDto.ErrorDto.builder()
+        List<TodayErrorDto.ErrorDto> top4Articles = new ArrayList<>();
+        topTags.stream().limit(4).forEach(tag -> {
+            top4Articles.add(TodayErrorDto.ErrorDto.builder()
                     .tagName((String) tag[0])
                     .count(((Number) tag[1]).longValue())
                     .build());
         });
         TodayErrorDto.ErrorCount result = TodayErrorDto.ErrorCount.builder()
                 .totalCount(totalCount)
-                .top5Articles(top5Articles)
+                .top5Articles(top4Articles)
                 .build();
 
         return ResponseEntity.ok(ApiResponse.onSuccess(result));
