@@ -11,7 +11,8 @@ public class PermitAllPathsConfig {
         return new String[]{
                 "/login", "/join", "/oauth2/**", "/ci",
                 "/api/article/today-error", "/api/scream/**",
-                "/api/article/all", "/api/article/tag/**"
+                "/api/article/all", "/api/article/tag/**",
+                "/api/article/today-error"
         };
     }
 }

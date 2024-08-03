@@ -12,7 +12,7 @@ public class TodayErrorDto {
     public static class ErrorCount {
         private Long totalCount;
         @Builder.Default
-        private List<ErrorDto> top5Articles = new ArrayList<>();
+        private List<ErrorDto> ranking = new ArrayList<>();
     }
 
     @Data
