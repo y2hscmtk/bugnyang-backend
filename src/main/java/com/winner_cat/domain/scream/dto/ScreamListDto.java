@@ -13,6 +13,16 @@ public class ScreamListDto {
     public static class ScreamResponse {
         private String content; // 아우성
         private LocalDateTime updatedAt;
+        private Long minutesAgo; // n분 전
+        private String timeAgo; // n분 전 또는 n시간 전
+
+        public void setMinutesAgo(Long minutesAgo) {
+            this.minutesAgo = minutesAgo;
+        }
+
+        public void setTimeAgo(String timeAgo) {
+            this.timeAgo = timeAgo;
+        }
     }
 
     // 아우성 조회
@@ -25,3 +35,5 @@ public class ScreamListDto {
         }
     }
 }
+
+

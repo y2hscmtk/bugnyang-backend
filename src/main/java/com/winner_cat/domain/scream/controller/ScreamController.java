@@ -27,8 +27,12 @@ public class ScreamController {
 
     // 아우성 조회
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getAllScreams(LocalDateTime updatedAt) {
-        ResponseEntity<ApiResponse<?>> result = screamService.getAllScreams(updatedAt);
-        return result;
+    public ResponseEntity<ApiResponse<?>> getAllScreams(@RequestParam(required = false) Long minutesAgo) {
+        if (minutesAgo == null) {
+            minutesAgo = 60L; // 기본값 60분
+        }
+        return screamService.getAllScreams(minutesAgo);
     }
+
+
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +38,7 @@ public class ScreamServiceImpl implements ScreamService {
     }
 
     // 아우성 조회
-    public ResponseEntity<ApiResponse<?>> getAllScreams(LocalDateTime updatedAt) {
+    public ResponseEntity<ApiResponse<?>> getAllScreams(Long minutesAgo) {
         // 오늘 날짜의 시작과 끝을 정의
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
@@ -45,14 +46,27 @@ public class ScreamServiceImpl implements ScreamService {
 
         List<Scream> screams = screamRepository.findAllByUpdatedAtBetween(startOfDay, endOfDay);
         List<ScreamListDto.ScreamResponse> screamResponses = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (Scream scream : screams) {
+            long minutesDifference = Duration.between(scream.getUpdatedAt(), now).toMinutes();
+            String timeAgo;
+            if (minutesDifference < 60) {
+                timeAgo = minutesDifference + "분 전";
+            } else {
+                long hoursDifference = minutesDifference / 60;
+                timeAgo = hoursDifference + "시간 전";
+            }
             screamResponses.add(ScreamListDto.ScreamResponse.builder()
                     .content(scream.getContent())
                     .updatedAt(scream.getUpdatedAt())
+                    .minutesAgo(minutesDifference)
+                    .timeAgo(timeAgo)
                     .build());
         }
 
         ScreamListDto.SearchScreamsRes searchScreamsRes = new ScreamListDto.SearchScreamsRes(screamResponses);
         return ResponseEntity.ok(ApiResponse.onSuccess(searchScreamsRes));
     }
+
+
 }
