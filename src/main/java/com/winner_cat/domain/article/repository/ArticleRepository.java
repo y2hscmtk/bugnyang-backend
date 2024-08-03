@@ -18,6 +18,12 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("SELECT a FROM Article a WHERE a.author = :author ORDER BY a.createdAt DESC")
     Page<Article> findByAuthor(@Param("author") Member author, Pageable pageable);
 
+    @Query("SELECT a FROM Article a ORDER BY a.createdAt DESC")
+    Page<Article> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("SELECT a FROM Article a JOIN a.tags t WHERE t.tag.tagName = :tagName ORDER BY a.createdAt DESC")
+    Page<Article> findByTagName(@Param("tagName") String tagName, Pageable pageable);
+
     // 오늘 작성된 게시글 찾기
     @Query("SELECT a FROM Article a WHERE a.createdAt >= :startTime AND a.createdAt <= :endTime")
     List<Article> findAllByCreatedAtBetween(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
