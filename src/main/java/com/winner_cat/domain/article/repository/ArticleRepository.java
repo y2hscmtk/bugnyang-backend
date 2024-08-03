@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,4 +23,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT a FROM Article a JOIN a.tags t WHERE t.tag.tagName = :tagName ORDER BY a.createdAt DESC")
     Page<Article> findByTagName(@Param("tagName") String tagName, Pageable pageable);
+
+    // 오늘 작성된 게시글 찾기
+    @Query("SELECT a FROM Article a WHERE a.createdAt >= :startTime AND a.createdAt <= :endTime")
+    List<Article> findAllByCreatedAtBetween(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 }

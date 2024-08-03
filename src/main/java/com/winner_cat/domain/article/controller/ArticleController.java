@@ -30,25 +30,29 @@ public class ArticleController {
     // 게시글 수정
     @PatchMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> modifyArticle(
-            @PathVariable Long articleId,
-            @RequestBody ArticleUpdateDto.Req req) {
-        ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req);
+            @PathVariable Long articleId, @RequestBody ArticleUpdateDto.Req req,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.modifyArticle(articleId, req, email);
         return result;
     }
 
     // 게시글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<ApiResponse<?>> deleteArticle(
-            @PathVariable Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId);
+            @PathVariable Long articleId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.deleteArticle(articleId, email);
         return result;
     }
 
     // 게시글 상세 조회
     @GetMapping("/detail/{articleId}")
     public ResponseEntity<ApiResponse<?>> getArticleDetail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("articleId") Long articleId) {
-        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(articleId);
+        String email = userDetails.getEmail();
+        ResponseEntity<ApiResponse<?>> result = articleService.getArticleDetail(email,articleId);
         return result;
     }
 
@@ -81,5 +85,13 @@ public class ArticleController {
             @RequestParam String tagName,
             Pageable pageable) {
         return articleService.getArticleRecommendByTag(tagName, pageable);
+    }
+
+    /**
+     * 오늘 모인 에러 개수 보여주기
+     */
+    @GetMapping("/today-error")
+    public ResponseEntity<?> getTodayFixErrorInfo() {
+        return articleService.getTodayFixErrorInfo();
     }
 }

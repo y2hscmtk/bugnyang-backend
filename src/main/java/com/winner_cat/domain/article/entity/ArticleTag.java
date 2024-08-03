@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ArticleTag")
-public class ArticleTag {
+public class ArticleTag{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_tag_id")

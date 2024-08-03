@@ -51,7 +51,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         logger.info("JWT Token Created and Added to Response");
 
-        String targetUrl = "http://localhost:3000/main"; // 메인 페이지로 리다이렉트
+        String targetUrl = "https://bugnyang2.netlify.app/"; // 메인 페이지로 리다이렉트
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
         logger.info("Redirected to: " + targetUrl);

@@ -12,14 +12,14 @@ public class ArticleListDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ArticleResponse {
-        private Long id;
+        private String email; // 작성자 아이디
         private String title; // 게시글 제목
         @Builder.Default
         private List<TagResponseDto> tags = new ArrayList<>(); // 태그
         private String cause; // 원인
         private String solution; // 해결 방법
         private LocalDateTime updatedAt;
-
+        private Boolean isScrapped; // 게시글 스크랩 유무
     }
 
     // 게시글 조회
