@@ -363,7 +363,7 @@ public class ArticleServiceImpl implements ArticleService{
         });
         TodayErrorDto.ErrorCount result = TodayErrorDto.ErrorCount.builder()
                 .totalCount(totalCount)
-                .top5Articles(top4Articles)
+                .ranking(top4Articles)
                 .build();
 
         return ResponseEntity.ok(ApiResponse.onSuccess(result));
