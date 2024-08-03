@@ -15,6 +15,8 @@ public interface ArticleTagRepository extends JpaRepository<ArticleTag,Long> {
     void deleteByArticle(Article article);
     List<ArticleTag> findByArticle(Article article);
     List<ArticleTag> findByTag(Tag tag);
+
+    @Query("SELECT at FROM ArticleTag at JOIN at.article a WHERE at.tag = :tag ORDER BY a.createdAt DESC")
     Page<ArticleTag> findArticleTagPageByTag(Tag tag, Pageable pageable);
 
     // 태그 이름으로 묶어서 내림차순 추출
