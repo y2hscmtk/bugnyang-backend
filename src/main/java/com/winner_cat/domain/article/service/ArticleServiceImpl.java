@@ -16,7 +16,9 @@ import com.winner_cat.global.response.ApiResponse;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -239,10 +241,20 @@ public class ArticleServiceImpl implements ArticleService{
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
     }
 
+    /**
+     * 전체 게시글 조회(미리보기)
+     */
     @Override
     public ResponseEntity<?> getAllArticle(Pageable pageable) {
+        // 기본 정렬 기준 설정: createdAt 속성 기준으로 내림차순 정렬
+        Pageable defaultPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
         // 1. pageable 객체를 바탕으로 전체 게시글 엔티티 조회
-        Page<Article> articlePage = articleRepository.findAll(pageable);
+        Page<Article> articlePage = articleRepository.findAll(defaultPageable);
         int totalPages = articlePage.getTotalPages();
         // 2. 반환 DTO 생성 및 반환
         List<ArticlePreviewDto.AllArticlePreview> resultDtoList = new ArrayList<>();
