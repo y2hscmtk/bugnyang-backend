@@ -198,7 +198,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     /**
-     * 내가 작성한 게시글 조회
+     * 내가 작성한 게시글 조회(미리보기)
      */
     @Override
     public ResponseEntity<ApiResponse<?>> getMyArticles(String email, Pageable pageable) {
@@ -233,7 +233,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
         // 최종 응답 생성
         ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
-                .email(author.getEmail())
+//                .email(author.getEmail())
                 .articlePreviewList(articlePreviewList)
                 .totalPages(totalPages)
                 .build();
@@ -320,6 +320,48 @@ public class ArticleServiceImpl implements ArticleService{
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
+    }
+
+    /**
+     * 태그로 내가 작성한 게시글 조회
+     */
+    @Override
+    public ResponseEntity<?> getMyArticleByTag(String email, String tagName, Pageable pageable) {
+        // 1. 사용자 정보 얻어오기
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        // 2. 태그 정보 얻어오기
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+        // 3. 사용자와 태그 정보 바탕으로 게시글 페이징 얻어오기
+        Page<ArticleTag> myArticleTagPageByTag = articleTagRepository.findMyArticleTagPageByTag(member, tag, pageable);
+
+        // 4. DTO 생성 및 반환
+        int totalPages = myArticleTagPageByTag.getTotalPages();
+        List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
+        for (ArticleTag articleTag : myArticleTagPageByTag.getContent()) {
+            Article article = articleTag.getArticle();
+            // 관련 태그들 얻어오기
+            List<TagResponseDto> tagResponseDtoList = article.getTags().stream()
+                    .map(at -> TagResponseDto.builder()
+                            .tagName(at.getTag().getTagName())
+                            .colorCode(at.getTag().getColorCode())
+                            .build())
+                    .collect(Collectors.toList());
+
+            ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
+                    .builder()
+                    .articleId(article.getId())
+                    .title(article.getTitle())
+                    .tagList(tagResponseDtoList)
+                    .build();
+            articlePreviewList.add(result);
+        }
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(articlePreviewList)
+                .build();
+        return ResponseEntity.ok(ApiResponse.onSuccess(result));
     }
 
     /**

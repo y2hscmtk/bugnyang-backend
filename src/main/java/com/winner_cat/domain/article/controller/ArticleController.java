@@ -65,6 +65,16 @@ public class ArticleController {
         return result;
     }
 
+    // 태그로 내가 작성한 게시글 조회 (미리보기)
+    @GetMapping("/mine/tag")
+    public ResponseEntity<?> getMyArticlesByTag(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam String tagName,
+            Pageable pageable) {
+        String email = customUserDetails.getEmail();
+        return articleService.getMyArticleByTag(email, tagName, pageable);
+    }
+
     // 전체 게시글 조회 - 미리보기
     @GetMapping("/all")
     public ResponseEntity<?> getAllArticle(Pageable pageable) {

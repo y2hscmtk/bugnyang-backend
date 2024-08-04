@@ -1,6 +1,7 @@
 package com.winner_cat.domain.article.entity;
 
 import com.winner_cat.domain.member.entity.Member;
+import com.winner_cat.domain.scrap.entity.Scrap;
 import com.winner_cat.global.entity.BaseEntity;
 import com.winner_cat.global.enums.statuscode.ErrorStatus;
 import com.winner_cat.global.exception.GeneralException;
@@ -31,6 +32,9 @@ public class Article extends BaseEntity {
 
     @OneToMany(mappedBy = "article")
     private List<ArticleTag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article")
+    private List<Scrap> scrapList = new ArrayList<>();
 
     public void changeTags(ArrayList<ArticleTag> articleTag) {
         this.tags = articleTag;

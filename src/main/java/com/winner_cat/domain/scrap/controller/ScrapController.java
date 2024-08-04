@@ -36,6 +36,17 @@ public class ScrapController {
     }
 
     /**
+     * 태그로 내가 스크랩한 게시글 조회(미리보기)
+     */
+    @GetMapping("/mine/tag")
+    public ResponseEntity<?> getAllMyScrapArticlesByTag(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam String tagName,
+            Pageable pageable) {
+        return scrapService.getAllMyScrapArticlesByTag(userDetails.getEmail(), tagName, pageable);
+    }
+
+    /**
      * 스크랩 취소
      */
     @DeleteMapping("/cancel/{articleId}")
