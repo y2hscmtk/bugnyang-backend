@@ -15,7 +15,6 @@ public class ArticlePreviewDto {
     @Data
     @Builder
     public static class AllArticlePreviewResponse {
-        private String email;
         private int totalPages;
         @Builder.Default
         private List<AllArticlePreview> articlePreviewList = new ArrayList<>();
