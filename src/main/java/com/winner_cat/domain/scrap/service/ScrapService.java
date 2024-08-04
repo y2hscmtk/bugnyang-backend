@@ -1,13 +1,10 @@
 package com.winner_cat.domain.scrap.service;
 
-import com.winner_cat.domain.article.dto.ArticlePreviewDto;
 import com.winner_cat.domain.article.dto.TagResponseDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
 import com.winner_cat.domain.article.entity.Tag;
 import com.winner_cat.domain.article.repository.ArticleRepository;
-import com.winner_cat.domain.article.repository.ArticleTagRepository;
-import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.domain.scrap.dto.ScrapArticlePreview;
@@ -123,7 +120,7 @@ public class ScrapService {
                     .builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
-                    .tagList(tagResponseDtoList)
+                    .tags(tagResponseDtoList)
                     .build();
             articlePreviewList.add(result);
         }

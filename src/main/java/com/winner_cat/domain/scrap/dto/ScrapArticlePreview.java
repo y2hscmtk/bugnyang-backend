@@ -22,6 +22,6 @@ public class ScrapArticlePreview {
         private Long articleId;
         private String title;
         @Builder.Default
-        private List<TagResponseDto> tagList = new ArrayList<>();
+        private List<TagResponseDto> tags = new ArrayList<>();
     }
 }
