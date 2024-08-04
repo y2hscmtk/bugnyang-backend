@@ -63,10 +63,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setMaxAge(60 * 60 * 60);
         cookie.setSecure(true); // HTTPS 환경에서만 쿠키 전송
         cookie.setPath("/");
-        cookie.setHttpOnly(true); // 자바스크립트에서 쿠키에 접근 가능
+        cookie.setHttpOnly(false);
         // 프론트에서 쿠키 접근을 위해 추가
         cookie.setAttribute("SameSite","None");
-        //cookie.setDomain("https://bugnyang2.netlify.app/");
         return cookie;
     }
 
