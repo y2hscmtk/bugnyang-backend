@@ -47,6 +47,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtUtil.createJwt(username,email,role);
         response.addCookie(createCookie("Authorization", token)); // 쿠키에 토큰 삽입
+        response.addCookie(createCookie("email",email)); // 쿠키에 이메일 삽입
         response.addHeader("Authorization", "Bearer " + token); // 헤더에 쿠키 삽입
 
         logger.info("JWT Token Created and Added to Response");
