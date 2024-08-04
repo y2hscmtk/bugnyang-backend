@@ -10,6 +10,7 @@ import com.winner_cat.domain.article.repository.ArticleTagRepository;
 import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
+import com.winner_cat.domain.scrap.dto.ScrapArticlePreview;
 import com.winner_cat.domain.scrap.dto.ScrapDto;
 import com.winner_cat.domain.scrap.entity.Scrap;
 import com.winner_cat.domain.scrap.repository.ScrapRepository;
@@ -108,7 +109,7 @@ public class ScrapService {
         Page<Article> scrappedArticlesByTag = articleRepository.findScrappedArticlesByTag(member.getId(), tagName, pageable);
         int totalPages = scrappedArticlesByTag.getTotalPages();
 
-        List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
+        List<ScrapArticlePreview.AllArticlePreview> articlePreviewList = new ArrayList<>();
         for (Article article : scrappedArticlesByTag.getContent()) {
             // 관련 태그들 얻어오기
             List<TagResponseDto> tagResponseDtoList = article.getTags().stream()
@@ -118,7 +119,7 @@ public class ScrapService {
                             .build())
                     .collect(Collectors.toList());
 
-            ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
+            ScrapArticlePreview.AllArticlePreview result = ScrapArticlePreview.AllArticlePreview
                     .builder()
                     .articleId(article.getId())
                     .title(article.getTitle())
@@ -128,9 +129,9 @@ public class ScrapService {
         }
 
         // 4. DTO 생성 및 반환
-        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+        ScrapArticlePreview.AllArticlePreviewResponse result = ScrapArticlePreview.AllArticlePreviewResponse.builder()
                 .totalPages(totalPages)
-                .articlePreviewList(articlePreviewList)
+                .scrapPreviewList(articlePreviewList)
                 .build();
         return ResponseEntity.ok(ApiResponse.onSuccess(result));
     }
