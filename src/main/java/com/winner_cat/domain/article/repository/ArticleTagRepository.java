@@ -26,4 +26,8 @@ public interface ArticleTagRepository extends JpaRepository<ArticleTag,Long> {
     // 태그 이름으로 묶어서 내림차순 추출
     @Query("SELECT at.tag.tagName, COUNT(at) FROM ArticleTag at WHERE at.article IN :articles GROUP BY at.tag.tagName ORDER BY COUNT(at) DESC")
     List<Object[]> findTopTagsByArticles(@Param("articles") List<Article> articles);
+
+    // 회원이 스크랩한 게시글 중 특정 태그에 해당하는 게시글 페이징 조회
+    @Query("SELECT at FROM ArticleTag at JOIN at.article a JOIN a.scrapList sc WHERE sc.member = :member and at.tag = :tag ORDER BY a.createdAt DESC")
+    Page<ArticleTag> findScrapArticleTagPageByTag(Member member, Tag tag, Pageable pageable);
 }

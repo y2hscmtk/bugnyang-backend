@@ -12,7 +12,6 @@ import java.util.Optional;
 
 
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
-
     @Query("SELECT sc FROM Scrap sc JOIN sc.article ac WHERE sc.member = :member ORDER BY ac.createdAt DESC")
     Page<Scrap> findByMember(Member member, Pageable pageable);
     // 회원이 게시글을 스크랩했는지 유무

@@ -1,10 +1,13 @@
 package com.winner_cat.domain.scrap.service;
 
+import com.winner_cat.domain.article.dto.ArticlePreviewDto;
 import com.winner_cat.domain.article.dto.TagResponseDto;
 import com.winner_cat.domain.article.entity.Article;
 import com.winner_cat.domain.article.entity.ArticleTag;
 import com.winner_cat.domain.article.entity.Tag;
 import com.winner_cat.domain.article.repository.ArticleRepository;
+import com.winner_cat.domain.article.repository.ArticleTagRepository;
+import com.winner_cat.domain.article.repository.TagRepository;
 import com.winner_cat.domain.member.entity.Member;
 import com.winner_cat.domain.member.repository.MemberRepository;
 import com.winner_cat.domain.scrap.dto.ScrapDto;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,6 +34,8 @@ public class ScrapService {
     private final ScrapRepository scrapRepository;
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
+    private final TagRepository tagRepository;
+    private final ArticleTagRepository articleTagRepository;
 
     public ResponseEntity<?> scrapArticle(String email, Long articleId) {
         // 1. 회원 조회
@@ -90,6 +96,47 @@ public class ScrapService {
                 .build();
 
         return ResponseEntity.ok().body(ApiResponse.onSuccess(result));
+    }
+
+    /**
+     * 태그로 내가 스크랩한 게시글 조회(미리보기)
+     */
+    public ResponseEntity<?> getAllMyScrapArticlesByTag(String email, String tagName, Pageable pageable) {
+        // 1. 사용자 정보 얻어오기
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        // 2. 태그 정보 얻어오기
+        Tag tag = tagRepository.findByTagName(tagName)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
+        // 3. 해당 회원이 스크랩한 태그 정보 조회
+        Page<ArticleTag> scrapArticleTagPageByTag = articleTagRepository.findScrapArticleTagPageByTag(member, tag, pageable);
+        int totalPages = scrapArticleTagPageByTag.getTotalPages();
+        List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
+        for (ArticleTag articleTag : scrapArticleTagPageByTag.getContent()) {
+            Article article = articleTag.getArticle();
+            // 관련 태그들 얻어오기
+            List<TagResponseDto> tagResponseDtoList = article.getTags().stream()
+                    .map(at -> TagResponseDto.builder()
+                            .tagName(at.getTag().getTagName())
+                            .colorCode(at.getTag().getColorCode())
+                            .build())
+                    .collect(Collectors.toList());
+
+            ArticlePreviewDto.AllArticlePreview result = ArticlePreviewDto.AllArticlePreview
+                    .builder()
+                    .articleId(article.getId())
+                    .title(article.getTitle())
+                    .tagList(tagResponseDtoList)
+                    .build();
+            articlePreviewList.add(result);
+        }
+
+        // 4. DTO 생성 및 반환
+        ArticlePreviewDto.AllArticlePreviewResponse result = ArticlePreviewDto.AllArticlePreviewResponse.builder()
+                .totalPages(totalPages)
+                .articlePreviewList(articlePreviewList)
+                .build();
+        return ResponseEntity.ok(ApiResponse.onSuccess(result));
     }
 
     /**
