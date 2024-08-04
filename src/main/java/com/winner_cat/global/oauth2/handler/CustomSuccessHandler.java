@@ -66,7 +66,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setHttpOnly(true); // 자바스크립트에서 쿠키에 접근 가능
         // 프론트에서 쿠키 접근을 위해 추가
         cookie.setAttribute("SameSite","None");
-        cookie.setDomain("https://bugnyang2.netlify.app/");
+        //cookie.setDomain("https://bugnyang2.netlify.app/");
         return cookie;
     }
 
