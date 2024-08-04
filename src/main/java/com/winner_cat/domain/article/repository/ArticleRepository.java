@@ -27,4 +27,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     // 오늘 작성된 게시글 찾기
     @Query("SELECT a FROM Article a WHERE a.createdAt >= :startTime AND a.createdAt <= :endTime")
     List<Article> findAllByCreatedAtBetween(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+    @Query("SELECT a FROM Article a JOIN a.tags at JOIN at.tag t JOIN a.scrapList s WHERE s.member.id = :memberId AND t.tagName = :tagName ORDER BY a.createdAt DESC")
+    Page<Article> findScrappedArticlesByTag(@Param("memberId") Long memberId, @Param("tagName") String tagName, Pageable pageable);
 }

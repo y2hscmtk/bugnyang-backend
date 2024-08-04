@@ -34,8 +34,6 @@ public class ScrapService {
     private final ScrapRepository scrapRepository;
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
-    private final TagRepository tagRepository;
-    private final ArticleTagRepository articleTagRepository;
 
     public ResponseEntity<?> scrapArticle(String email, Long articleId) {
         // 1. 회원 조회
@@ -105,15 +103,13 @@ public class ScrapService {
         // 1. 사용자 정보 얻어오기
         Member member = memberRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-        // 2. 태그 정보 얻어오기
-        Tag tag = tagRepository.findByTagName(tagName)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.TAG_NOT_FOUND));
-        // 3. 해당 회원이 스크랩한 태그 정보 조회
-        Page<ArticleTag> scrapArticleTagPageByTag = articleTagRepository.findScrapArticleTagPageByTag(member, tag, pageable);
-        int totalPages = scrapArticleTagPageByTag.getTotalPages();
+
+        // 2. 해당 회원이 스크랩한 태그 정보 조회
+        Page<Article> scrappedArticlesByTag = articleRepository.findScrappedArticlesByTag(member.getId(), tagName, pageable);
+        int totalPages = scrappedArticlesByTag.getTotalPages();
+
         List<ArticlePreviewDto.AllArticlePreview> articlePreviewList = new ArrayList<>();
-        for (ArticleTag articleTag : scrapArticleTagPageByTag.getContent()) {
-            Article article = articleTag.getArticle();
+        for (Article article : scrappedArticlesByTag.getContent()) {
             // 관련 태그들 얻어오기
             List<TagResponseDto> tagResponseDtoList = article.getTags().stream()
                     .map(at -> TagResponseDto.builder()
