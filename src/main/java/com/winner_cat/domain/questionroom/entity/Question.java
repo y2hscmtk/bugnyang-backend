@@ -16,7 +16,7 @@ public class Question extends BaseEntity {
     @Column(name = "question_id")
     private Long id;
 
-    @Column(length = 2000) // 길이를 2000자로 설정
+    @Column(length = 10000) // 최대 글자수 제한 10000자
     private String content; // 질문 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
