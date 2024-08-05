@@ -27,7 +27,7 @@ public class Article extends BaseEntity {
 
     @Column(length = 10000) // 최대 글자수 제한 10000자
     private String cause; // 원인
-    @Column(length = 10000) // 최대 글자수 제한 10000자
+    @Column(columnDefinition = "TEXT") //
     private String solution; // 해결 방법
 
     @ManyToOne(fetch = FetchType.LAZY)
