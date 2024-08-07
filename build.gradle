@@ -5,7 +5,13 @@ plugins {
 }
 
 group = 'com.likelion'
-version = '0.0.1-SNAPSHOT'
+
+// jar 빌드시 plain 삭제 - ci/cd - 빌드 시간 단축
+jar {
+	archiveBaseName = 'winnercat'
+	version = '0.0.1-SNAPSHOT'
+	enabled = false
+}
 
 java {
 	toolchain {
@@ -28,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-json'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -39,6 +46,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {

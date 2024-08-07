@@ -24,9 +24,29 @@ public enum ErrorStatus implements BaseCode {
 	ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, "AUTH4003", "계정이 비활성화되었습니다."),
 	ACCOUNT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH4004", "자격증명이 만료되었습니다."),
 
+	// Article
+	ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "삭제되었거나 존재하지 않는 게시글입니다."),
+	ARTICLE_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4002", "게시글 작성자만 접근 가능합니다."),
+
+	// Tag
+	TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "해당하는 태그가 없습니다"),
+
 	// JWT Error
 	TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "TOKEN4001", "토큰이 없거나 만료되었습니다."),
-	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다.");
+	TOKEN_NO_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "TOKEN4002", "해당 토큰에 권한이 없습니다."),
+
+	// member
+	EXSISTS_MEMBER(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 사용중인 이메일입니다."),
+
+
+	// Question
+	QUESTION_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTIONROOM4001", "존재하지 않는 질문방 입니다."),
+	FAIL_TO_CREATE_ANSWER(HttpStatus.NOT_FOUND, "QUESTIONROOM4002", "답변을 생성하는데 실패하였습니다. GPT API키가 만료되었을 수 있습니다."),
+	// Scrap
+	SCRAPINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 정보가 없습니다. 아직 스크랩하지 않은 게시글입니다."),
+
+	// Answer
+	ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER4001", "해당하는 답변이 존재하지 않습니다. 질문 아이디를 다시 한번 확인해주세요");
 
 	private final HttpStatus httpStatus;
 	private final String code;

@@ -3,6 +3,8 @@ package com.winner_cat.domain.article.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -15,4 +17,5 @@ public class Tag {
     @Column(name = "tag_id")
     private Long id;
     private String tagName;
+    private String colorCode; // 색상 코드
 }

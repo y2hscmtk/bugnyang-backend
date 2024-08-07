@@ -16,5 +16,10 @@ public class Answer extends BaseEntity {
     @Column(name = "answer_id")
     private Long id;
 
+    @Column(length = 10000) // 최대 글자수 제한 10000자
     private String content; // 답변 내용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_room_id")
+    private QuestionRoom questionRoom;
 }

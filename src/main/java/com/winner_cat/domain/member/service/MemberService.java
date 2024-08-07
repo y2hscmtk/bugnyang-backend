@@ -36,7 +36,7 @@ public class MemberService {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_CORRECT);
         }
 
-        String accessToken = jwtUtil.createJwt(member.getEmail(), member.getRole());
+        String accessToken = jwtUtil.createJwt(member.getUsername(), member.getEmail(), member.getRole());
 
         // JWT 발급 성공시 Header에 삽입하여 반환
         HttpHeaders headers = new HttpHeaders();
@@ -49,20 +49,20 @@ public class MemberService {
 
         // 동일 username 사용자 생성 방지
         if (memberRepository.existsMemberByEmail(joinDTO.getEmail())) {
-            System.out.println("이미 존재하는 회원");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("이미 존재하는 회원입니다.");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.onFailure(ErrorStatus.EXSISTS_MEMBER, "이미 사용중인 이메일입니다."));
         }
 
-        // 새로운 회원 생성 - OAuth2 를 통한 회원가입을 수행할 경우 비밀번호는 저장하지 않아야함
         Member member = Member.builder()
+                .nickname(joinDTO.getNickname())
+                .username(joinDTO.getEmail()) // 일반 사용자의 경우 username은 이메일과 동일하게
                 .email(joinDTO.getEmail())
-                // 비밀번호 암호화 해서 저장
                 .password(passwordEncoder.encode(joinDTO.getPassword()))
                 .role("ROLE_ADMIN") // 사용자 권한 설정 접두사 ROLE 작성 필요
                 .build();
         memberRepository.save(member);
 
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok().body(ApiResponse.onSuccess("회원가입 성공"));
     }
 
 }
